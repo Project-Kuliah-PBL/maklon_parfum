@@ -93,7 +93,20 @@
         </div>
 
         <!-- Form -->
-        <form action="#" class="space-y-2.5" method="POST">
+         <!-- jika login gagal -->
+         @if ($errors->any())
+        <div class="text-red-500 text-xs mb-2">
+        {{ $errors->first() }}
+        </div>
+        @endif
+        <!-- jika login berhasil -->
+        @if(session('success'))
+        <div class="text-green-600 text-xs mb-2">
+        {{ session('success') }}
+        </div>
+        @endif
+        <form action="{{ route('login') }}" class="space-y-2.5" method="POST">
+        @csrf
           <!-- Email -->
           <div>
             <label class="block text-[0.6rem] lg:text-xs font-medium text-gray-700 mb-0.5" for="email">Email</label>

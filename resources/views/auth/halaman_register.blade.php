@@ -83,39 +83,66 @@
       
       <div class="mb-6">
         <h1 class="text-3xl font-bold text-brand-purple mb-1">Daftar Akun</h1>
+        <!-- jika error -->
+        @if ($errors->any())
+        <div class="bg-red-100 border border-red-300 text-red-600 text-xs p-3 rounded mb-3">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         <p class="text-[0.8rem] text-gray-500">
           Apakah anda sudah punya akun? 
           <a href="{{ route('login') }}" class="text-blue-600 font-bold hover:underline">Log In</a>
         </p>
       </div>
 
-      <form action="#" method="POST" class="space-y-3.5">
+      <form action="{{ route('register') }}" method="POST" class="space-y-3.5">
+      @csrf
         
         <div>
-          <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">Nama Brand</label>
-          <input type="text" placeholder="Nama Brand" class="input-field">
+        <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">Nama Pemilik</label>
+        <input type="text" name="name" placeholder="Nama Lengkap" class="input-field">
         </div>
 
         <div>
-          <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">Email</label>
-          <input type="email" placeholder="Email" class="input-field">
+        <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">Username</label>
+        <input type="text" name="username" placeholder="Username" class="input-field">
         </div>
 
         <div>
-          <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">No Telepon</label>
-          <input type="text" placeholder="No Telepon" class="input-field">
+        <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">Nama Brand</label>
+        <input type="text" name="nama_brand" placeholder="Nama Brand" class="input-field">
         </div>
 
         <div>
-          <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">Password</label>
-          <input type="password" placeholder="Password" class="input-field">
+        <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">Email</label>
+        <input type="email" name="email" placeholder="Email" class="input-field">
+        </div>
+
+        <div>
+        <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">No Telepon</label>
+        <input type="text" name="no_telp" placeholder="No Telepon" class="input-field">
+        </div>
+
+        <div>
+        <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">Password</label>
+        <input type="password" name="password" placeholder="Password" class="input-field">
+        </div>
+
+        <div>
+        <label class="block text-[0.8rem] font-semibold text-gray-700 mb-1">Konfirmasi Password</label>
+        <input type="password" name="password_confirmation" placeholder="Konfirmasi Password" class="input-field">
         </div>
 
         <div class="pt-3">
-          <button class="w-full bg-brand-purple hover:bg-brand-dark text-white font-bold py-3 rounded-lg text-sm transition-all shadow-md active:scale-[0.98]">
-            Daftar Akun
-          </button>
+        <button type="submit" class="w-full bg-brand-purple hover:bg-brand-dark text-white font-bold py-3 rounded-lg text-sm transition-all shadow-md active:scale-[0.98]">
+        Daftar Akun
+        </button>
         </div>
+
 
         <div class="relative flex items-center py-3">
           <div class="flex-grow border-t border-gray-200"></div>
