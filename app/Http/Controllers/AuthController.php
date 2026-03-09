@@ -59,32 +59,41 @@ class AuthController extends Controller
         ])->withInput();
     }
 
-    /**
-     * Proses register
-     */
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'username' => 'required|unique:users',
-            'email' => 'required|email|unique:users',
-            'nama_brand' => 'nullable',
-            'no_telp' => 'nullable',
-            'password' => 'required|min:6|confirmed'
-        ]);
+public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required',
+        'username' => 'required|unique:users',
+        'email' => 'required|email|unique:users',
+        'nama_brand' => 'required',
+        'no_telp' => 'required',
+        'password' => 'required|min:6|confirmed'
+    ], [
+        'name.required' => 'Nama pemilik wajib diisi.',
+        'username.required' => 'Username tidak boleh kosong.',
+        'username.unique' => 'Username ini sudah digunakan.',
+        'email.required' => 'Alamat email wajib diisi.',
+        'email.email' => 'Format email tidak valid.',
+        'email.unique' => 'Email ini sudah terdaftar.',
+        'nama_brand.required' => 'Nama brand wajib diisi.',
+        'no_telp.required' => 'Nomor telepon wajib diisi.',
+        'password.required' => 'Password wajib diisi.',
+        'password.min' => 'Password minimal harus 6 karakter.',
+        'password.confirmed' => 'Konfirmasi password tidak cocok.',
+    ]);
 
-        User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'email' => $request->email,
-            'nama_brand' => $request->nama_brand,
-            'no_telp' => $request->no_telp,
-            'role' => 'customer',
-            'password' => Hash::make($request->password)
-        ]);
+    User::create([
+        'name' => $request->name,
+        'username' => $request->username,
+        'email' => $request->email,
+        'nama_brand' => $request->nama_brand,
+        'no_telp' => $request->no_telp,
+        'role' => 'customer',
+        'password' => Hash::make($request->password)
+    ]);
 
-        return redirect()->route('login')->with('success','Register berhasil');
-    }
+    return redirect()->route('login')->with('success', 'Register berhasil');
+}
 
     /**
      * Proses logout
