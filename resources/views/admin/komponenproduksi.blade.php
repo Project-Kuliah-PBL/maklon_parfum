@@ -158,16 +158,61 @@
                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                     </button>
 
-                    <form action="{{ route('admin.aroma.delete',$cat->id) }}" method="POST">
+                    <button onclick="openDeleteModal({{ $cat->id }})"
+                    class="text-slate-400 hover:text-red-500">
+
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+
+                    </button>
+    
+                     <!-- Modal Delete Aroma -->
+
+                    <div id="deleteAromaModal" 
+                    class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+
+                    <div class="bg-white rounded-xl p-6 w-96 shadow-lg">
+
+                    <div class="flex items-center gap-3 mb-4">
+
+                    <div class="bg-red-100 p-2 rounded-lg">
+                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i>
+                    </div>
+
+                    <h2 class="text-lg font-bold text-gray-800">
+                    Hapus Aroma
+                    </h2>
+
+                    </div>
+
+                    <p class="text-sm text-gray-500 mb-6">
+                    Apakah Anda yakin ingin menghapus kategori aroma ini?
+                    Data yang dihapus tidak dapat dikembalikan.
+                    </p>
+
+                    <form id="deleteAromaForm" method="POST">
+
                     @csrf
                     @method('DELETE')
 
-                    <button class="text-slate-400 hover:text-red-500">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    <div class="flex justify-end gap-3">
+
+                    <button type="button"
+                    onclick="closeDeleteModal()"
+                    class="px-4 py-2 text-gray-500 hover:text-gray-700">
+                    Batal
                     </button>
+
+                    <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                    Hapus
+                    </button>
+
+                    </div>
 
                     </form>
 
+                    </div>
+
+                    </div>
                     </div>
 
                     </td>
@@ -318,6 +363,29 @@ document.getElementById(id).classList.add('flex')
 function closeModal(id){
 document.getElementById(id).classList.remove('flex')
 document.getElementById(id).classList.add('hidden')
+}
+function openDeleteModal(id)
+{
+
+let modal = document.getElementById('deleteAromaModal');
+
+let form = document.getElementById('deleteAromaForm');
+
+form.action = "/admin/aroma/" + id;
+
+modal.classList.remove('hidden');
+modal.classList.add('flex');
+
+}
+
+function closeDeleteModal()
+{
+
+let modal = document.getElementById('deleteAromaModal');
+
+modal.classList.remove('flex');
+modal.classList.add('hidden');
+
 }
 </script>
 </body>
