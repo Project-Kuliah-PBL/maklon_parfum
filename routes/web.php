@@ -170,6 +170,7 @@ Route::prefix('admin')
 
      // Routes untuk Riwayat Pesanan
     Route::get('/riwayat-pesanan', [RiwayatPesananController::class, 'index'])->name('riwayat.pesanan');
+    Route::get('/riwayat-pesanan/search', [RiwayatPesananController::class, 'search'])->name('riwayat.search');
     Route::get('/riwayat-pesanan/{id}', [RiwayatPesananController::class, 'show'])->name('riwayat.show');
     Route::get('/riwayat-pesanan/export/csv', [RiwayatPesananController::class, 'exportCsv'])->name('riwayat.export.csv');
     Route::get('/riwayat-pesanan/export/pdf', [RiwayatPesananController::class, 'exportPdf'])->name('riwayat.export.pdf');

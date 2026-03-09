@@ -61,10 +61,10 @@ class Pengajuan extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function pembayaran()
-    {
-        return $this->hasMany(Pembayaran::class, 'pengajuan_id');
-    }
+   public function pembayarans()
+{
+    return $this->hasMany(Pembayaran::class, 'pengajuan_id');
+}
 
     /*
     |--------------------------------------------------------------------------

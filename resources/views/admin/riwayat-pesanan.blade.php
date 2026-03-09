@@ -40,27 +40,36 @@ function getInitials($name) {
 
     {{-- Filter Section --}}
     <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex gap-3 mb-6">
-        <div class="flex-1 relative">
-            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            <input type="text" id="searchInput" placeholder="Cari ID pesanan atau nama klien..." class="w-full pl-9 pr-3 py-1.5 bg-slate-50 border-none rounded-lg text-xs focus:ring-1 focus:ring-brand-purple">
-        </div>
-        <div class="flex gap-2">
-            <select id="statusFilter" class="px-3 py-1.5 bg-slate-50 border-none rounded-lg text-xs focus:ring-1 focus:ring-brand-purple">
-                <option value="">Semua Status</option>
-                <option value="Menunggu">Menunggu</option>
-                <option value="Pending">Pending</option>
-                <option value="Diproses">Diproses</option>
-                <option value="Proses">Proses</option>
-                <option value="Dalam Pengiriman">Dalam Pengiriman</option>
-                <option value="Selesai">Selesai</option>
-                <option value="Dibatalkan">Dibatalkan</option>
-                <option value="Ditolak">Ditolak</option>
-                <option value="Batal">Batal</option>
-            </select>
-            <button class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-600 rounded-lg text-xs font-medium">
-                <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Filter
-            </button>
-        </div>
+        <form id="filterForm" action="{{ route('admin.riwayat.pesanan') }}" method="GET" class="flex-1 flex gap-3">
+            <div class="flex-1 relative">
+                <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" 
+                       name="search" 
+                       id="searchInput" 
+                       value="{{ $search ?? '' }}"
+                       placeholder="Cari ID pesanan atau nama klien..." 
+                       class="w-full pl-9 pr-3 py-1.5 bg-slate-50 border-none rounded-lg text-xs focus:ring-1 focus:ring-purple-500">
+            </div>
+            <div class="flex gap-2">
+                <select name="status" id="statusFilter" class="px-3 py-1.5 bg-slate-50 border-none rounded-lg text-xs focus:ring-1 focus:ring-purple-500">
+                    <option value="">Semua Status</option>
+                    <option value="Pending" {{ ($status ?? '') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="Proses" {{ ($status ?? '') == 'Proses' ? 'selected' : '' }}>Proses</option>
+                    <option value="Diproses" {{ ($status ?? '') == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                    <option value="Selesai" {{ ($status ?? '') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                    <option value="Dibatalkan" {{ ($status ?? '') == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                    <option value="Ditolak" {{ ($status ?? '') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                </select>
+                <button type="submit" class="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-medium hover:bg-purple-700 transition-colors">
+                    <i data-lucide="filter" class="w-3.5 h-3.5"></i> Terapkan Filter
+                </button>
+                @if(request()->has('search') || request()->has('status'))
+                <a href="{{ route('admin.riwayat.pesanan') }}" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium hover:bg-slate-200 transition-colors">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i> Reset
+                </a>
+                @endif
+            </div>
+        </form>
     </div>
 
     {{-- Orders Table --}}
@@ -94,37 +103,9 @@ function getInitials($name) {
                         } else {
                             $totalColor = 'text-orange-600';
                         }
-                        
-                        // Warna untuk status
-                        $statusClass = '';
-                        switch ($order->status) {
-                            case 'Selesai':
-                                $statusClass = 'bg-emerald-100 text-emerald-600';
-                                break;
-                            case 'Dibatalkan':
-                            case 'Ditolak':
-                            case 'Batal':
-                                $statusClass = 'bg-red-100 text-red-600';
-                                break;
-                            case 'Dalam Pengiriman':
-                                $statusClass = 'bg-blue-100 text-blue-600';
-                                break;
-                            case 'Menunggu':
-                                $statusClass = 'bg-yellow-100 text-yellow-600';
-                                break;
-                            case 'Pending':
-                                $statusClass = 'bg-orange-100 text-orange-600';
-                                break;
-                            case 'Diproses':
-                            case 'Proses':
-                                $statusClass = 'bg-purple-100 text-purple-600';
-                                break;
-                            default:
-                                $statusClass = 'bg-slate-100 text-slate-600';
-                        }
                     @endphp
                     <tr class="text-xs text-slate-600 hover:bg-slate-50 transition-colors">
-                        <td class="px-4 py-3 font-semibold text-brand-purple">
+                        <td class="px-4 py-3 font-semibold text-purple-600">
                             {{ $order->no_pengajuan ?? 'PJ-' . str_pad($order->id, 5, '0', STR_PAD_LEFT) }}
                         </td>
                         <td class="px-4 py-3">
@@ -145,16 +126,24 @@ function getInitials($name) {
                             Rp {{ number_format($totalPembayaran, 0, ',', '.') }}
                         </td>
                         <td class="px-4 py-3">
-                            <span class="px-2 py-0.5 rounded-lg text-[8px] font-bold {{ $statusClass }}">
-                                {{ $order->status }}
-                            </span>
+                            @if(in_array(strtolower($order->status), ['selesai']))
+                                <span style="background-color: #d1fae5 !important; color: #059669 !important; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; display: inline-block;">{{ $order->status }}</span>
+                            @elseif(in_array(strtolower($order->status), ['dibatalkan', 'ditolak', 'batal']))
+                                <span style="background-color: #fee2e2 !important; color: #dc2626 !important; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; display: inline-block;">{{ $order->status }}</span>
+                            @elseif(in_array(strtolower($order->status), ['proses', 'diproses', 'dalam pengiriman']))
+                                <span style="background-color: #dbeafe !important; color: #2563eb !important; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; display: inline-block;">{{ $order->status }}</span>
+                            @elseif(in_array(strtolower($order->status), ['pending', 'menunggu']))
+                                <span style="background-color: #fef3c7 !important; color: #ca8a04 !important; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; display: inline-block;">{{ $order->status }}</span>
+                            @else
+                                <span style="background-color: #f8fafc !important; color: #475569 !important; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; display: inline-block;">{{ $order->status }}</span>
+                            @endif
                         </td>
                         <td class="px-4 py-3 text-right">
                             <div class="flex justify-end gap-1">
-                                <button onclick="viewOrder('{{ $order->id }}')" class="p-1 text-slate-400 hover:text-brand-purple rounded hover:bg-slate-50">
+                                <button onclick="viewOrder('{{ $order->id }}')" class="p-1 text-slate-400 hover:text-purple-600 rounded hover:bg-slate-50 transition-colors">
                                     <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                                 </button>
-                                <button onclick="printOrder('{{ $order->id }}')" class="p-1 text-slate-400 hover:text-brand-purple rounded hover:bg-slate-50">
+                                <button onclick="printOrder('{{ $order->id }}')" class="p-1 text-slate-400 hover:text-purple-600 rounded hover:bg-slate-50 transition-colors">
                                     <i data-lucide="printer" class="w-3.5 h-3.5"></i>
                                 </button>
                             </div>
@@ -163,7 +152,11 @@ function getInitials($name) {
                     @empty
                     <tr>
                         <td colspan="9" class="px-4 py-8 text-center text-slate-400 text-xs">
-                            Tidak ada data pesanan
+                            @if(request()->has('search') || request()->has('status'))
+                                Tidak ada pesanan yang sesuai dengan filter yang diterapkan.
+                            @else
+                                Tidak ada data pesanan
+                            @endif
                         </td>
                     </tr>
                     @endforelse
@@ -172,18 +165,18 @@ function getInitials($name) {
         </div>
         
         {{-- Pagination dengan warna ungu --}}
-        <div class="px-4 py-3 border-t border-slate-50 flex justify-between items-center">
+        <div class="px-4 py-3 border-t border-slate-50 flex flex-col sm:flex-row justify-between items-center gap-3">
             <p class="text-[9px] text-slate-400">
                 Menampilkan {{ $orders->firstItem() ?? 0 }}-{{ $orders->lastItem() ?? 0 }} dari {{ $orders->total() }} pesanan
             </p>
-            <div class="flex gap-1">
+            <div class="flex gap-1 flex-wrap justify-center">
                 {{-- Previous Page Link --}}
                 @if ($orders->onFirstPage())
                     <span class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-300 cursor-not-allowed">
                         <i data-lucide="chevron-left" class="w-3 h-3"></i>
                     </span>
                 @else
-                    <a href="{{ $orders->previousPageUrl() }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-brand-purple hover:text-white transition-colors">
+                    <a href="{{ $orders->previousPageUrl() }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-purple-600 hover:text-white transition-colors">
                         <i data-lucide="chevron-left" class="w-3 h-3"></i>
                     </a>
                 @endif
@@ -196,7 +189,7 @@ function getInitials($name) {
                 
                 {{-- Link to First Page --}}
                 @if ($start > 1)
-                    <a href="{{ $orders->url(1) }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-brand-purple hover:text-white transition-colors text-xs">1</a>
+                    <a href="{{ $orders->url(1) }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-purple-600 hover:text-white transition-colors text-xs">1</a>
                     @if ($start > 2)
                         <span class="w-6 h-6 flex items-center justify-center text-slate-400 text-xs">...</span>
                     @endif
@@ -205,9 +198,9 @@ function getInitials($name) {
                 {{-- Page Numbers --}}
                 @for ($i = $start; $i <= $end; $i++)
                     @if ($i == $orders->currentPage())
-                        <span class="w-6 h-6 flex items-center justify-center rounded bg-brand-purple text-white text-xs font-bold">{{ $i }}</span>
+                        <span class="w-6 h-6 flex items-center justify-center rounded bg-purple-600 text-white text-xs font-bold">{{ $i }}</span>
                     @else
-                        <a href="{{ $orders->url($i) }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-brand-purple hover:text-white transition-colors text-xs">{{ $i }}</a>
+                        <a href="{{ $orders->url($i) }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-purple-600 hover:text-white transition-colors text-xs">{{ $i }}</a>
                     @endif
                 @endfor
                 
@@ -216,12 +209,12 @@ function getInitials($name) {
                     @if ($end < $orders->lastPage() - 1)
                         <span class="w-6 h-6 flex items-center justify-center text-slate-400 text-xs">...</span>
                     @endif
-                    <a href="{{ $orders->url($orders->lastPage()) }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-brand-purple hover:text-white transition-colors text-xs">{{ $orders->lastPage() }}</a>
+                    <a href="{{ $orders->url($orders->lastPage()) }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-purple-600 hover:text-white transition-colors text-xs">{{ $orders->lastPage() }}</a>
                 @endif
                 
                 {{-- Next Page Link --}}
                 @if ($orders->hasMorePages())
-                    <a href="{{ $orders->nextPageUrl() }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-brand-purple hover:text-white transition-colors">
+                    <a href="{{ $orders->nextPageUrl() }}" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 text-slate-400 hover:bg-purple-600 hover:text-white transition-colors">
                         <i data-lucide="chevron-right" class="w-3 h-3"></i>
                     </a>
                 @else
@@ -250,7 +243,7 @@ function getInitials($name) {
     {{-- Modal Detail Pesanan --}}
     <div id="orderDetailModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden">
-            <div class="brand-purple p-4 text-white flex justify-between items-center">
+            <div class="bg-purple-600 p-4 text-white flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <i data-lucide="shopping-bag" class="w-4 h-4"></i>
                     <h3 class="text-sm font-bold">Detail Pesanan</h3>
@@ -265,7 +258,7 @@ function getInitials($name) {
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-[9px] font-bold text-slate-400 uppercase mb-0.5">ID Pesanan</p>
-                        <p class="text-xs font-semibold text-brand-purple" id="detail-id"></p>
+                        <p class="text-xs font-semibold text-purple-600" id="detail-id"></p>
                     </div>
                     <div>
                         <p class="text-[9px] font-bold text-slate-400 uppercase mb-0.5">Status</p>
@@ -342,7 +335,7 @@ function getInitials($name) {
                 
                 <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
                     <button onclick="closeOrderModal()" class="px-4 py-1.5 border border-slate-200 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50">Tutup</button>
-                    <button onclick="printCurrentOrder()" class="px-4 py-1.5 brand-purple text-white rounded-lg text-xs font-medium flex items-center gap-1.5">
+                    <button onclick="printCurrentOrder()" class="px-4 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-medium flex items-center gap-1.5 hover:bg-purple-700 transition-colors">
                         <i data-lucide="printer" class="w-3.5 h-3.5"></i> Cetak
                     </button>
                 </div>
@@ -432,34 +425,6 @@ function getInitials($name) {
         if (currentOrderId) {
             printOrder(currentOrderId);
         }
-    }
-
-    // Filter functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        filterTable();
-    });
-
-    document.getElementById('statusFilter').addEventListener('change', function() {
-        filterTable();
-    });
-
-    function filterTable() {
-        const searchText = document.getElementById('searchInput').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
-        const rows = document.querySelectorAll('#ordersTableBody tr');
-
-        rows.forEach(row => {
-            if (row.cells.length > 1 && row.cells[0].textContent !== 'Tidak ada data pesanan') {
-                const id = row.cells[0]?.textContent.toLowerCase() || '';
-                const client = row.cells[1]?.textContent.toLowerCase() || '';
-                const status = row.cells[7]?.textContent.trim() || '';
-                
-                const matchesSearch = id.includes(searchText) || client.includes(searchText);
-                const matchesStatus = !statusFilter || status === statusFilter;
-                
-                row.style.display = matchesSearch && matchesStatus ? '' : 'none';
-            }
-        });
     }
 </script>
 @endpush

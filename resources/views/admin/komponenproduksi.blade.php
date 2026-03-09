@@ -4,353 +4,172 @@
 @section('page-title', 'Katalog Aroma & Kemasan')
 @section('page-subtitle', 'Manajemen komponen produksi parfum PT Arum Jaya Gemilang.')
 
-        <nav class="flex-1 space-y-2">
-            @foreach ($navItems as $item)
-                <a href="{{ route($item['route']) }}"
-                   class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
-                   {{ Route::is($item['route']) ? 'bg-white text-brand-purple shadow-sm' : 'text-white/70 hover:bg-white/10' }}">
-                    <i data-lucide="{{ $item['icon'] }}" class="w-5 h-5"></i>
-                    <span class="font-medium">{{ $item['label'] }}</span>
-                </a>
-            @endforeach
-        </nav>
+@push('styles')
+<style>
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-slideDown {
+        animation: slideDown 0.3s ease-out;
+    }
+</style>
+@endpush
 
-        <div class="mt-auto">
-             <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="flex items-center gap-3 px-4 py-3 w-full text-white/70 border border-white/20 rounded-lg hover:bg-white/10 transition-colors">
-                    <i data-lucide="log-out" class="w-5 h-5"></i>
-                    <span class="font-medium uppercase tracking-wider text-xs">Log Out</span>
-                </button>
-            </form>
+@section('content')
+<div class="space-y-8">
+    {{-- Notification Alert --}}
+    @if ($message = Session::get('success'))
+    <div id="successAlert" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3 animate-slideDown">
+        <div class="p-2 bg-emerald-100 rounded-lg">
+            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600"></i>
         </div>
-    </aside>
+        <div class="flex-1">
+            <h3 class="font-semibold text-emerald-800">Berhasil!</h3>
+            <p class="text-sm text-emerald-700">{{ $message }}</p>
+        </div>
+        <button onclick="closeAlert('successAlert')" class="p-1 hover:bg-emerald-100 rounded transition-colors">
+            <i data-lucide="x" class="w-4 h-4 text-emerald-600"></i>
+        </button>
+    </div>
+    @endif
 
-    <main class="flex-1 ml-64 p-8">
-        <header class="flex justify-between items-start mb-10">
-            <div>
-                <h2 class="text-3xl font-bold text-slate-800 mb-1">Katalog Aroma & Kemasan</h2>
-                <p class="text-slate-500 text-sm">Manajemen komponen produksi parfum PT Arum Jaya Gemilang.</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right">
-                    <p class="text-sm font-bold text-slate-800">Super Admin</p>
-                    <p class="text-xs text-slate-400">admin@arumjaya.co.id</p>
+    @if ($message = Session::get('deleted'))
+    <div id="deletedAlert" class="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3 animate-slideDown">
+        <div class="p-2 bg-red-100 rounded-lg">
+            <i data-lucide="trash-2" class="w-5 h-5 text-red-600"></i>
+        </div>
+        <div class="flex-1">
+            <h3 class="font-semibold text-red-800">Dihapus!</h3>
+            <p class="text-sm text-red-700">{{ $message }}</p>
+        </div>
+        <button onclick="closeAlert('deletedAlert')" class="p-1 hover:bg-red-100 rounded transition-colors">
+            <i data-lucide="x" class="w-4 h-4 text-red-600"></i>
+        </button>
+    </div>
+    @endif
+
+    @if ($message = Session::get('error'))
+    <div id="errorAlert" class="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3 animate-slideDown">
+        <div class="p-2 bg-red-100 rounded-lg">
+            <i data-lucide="alert-circle" class="w-5 h-5 text-red-600"></i>
+        </div>
+        <div class="flex-1">
+            <h3 class="font-semibold text-red-800">Gagal!</h3>
+            <p class="text-sm text-red-700">{{ $message }}</p>
+        </div>
+        <button onclick="closeAlert('errorAlert')" class="p-1 hover:bg-red-100 rounded transition-colors">
+            <i data-lucide="x" class="w-4 h-4 text-red-600"></i>
+        </button>
+    </div>
+    @endif
+    
+
+    {{-- Section Katalog Aroma --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-purple-50 text-brand-purple rounded-xl">
+                    <i data-lucide="flower-2" class="w-5 h-5"></i>
                 </div>
-                <h3 class="font-bold text-slate-800 text-lg">Katalog Aroma</h3>
+                <div>
+                    <h3 class="font-bold text-slate-800">Katalog Aroma</h3>
+                    <p class="text-xs text-slate-400">Daftar kategori aroma dan biayanya</p>
+                </div>
             </div>
             <button onclick="openModal('modalAroma')" 
-                class="bg-brand-purple-btn hover:opacity-90 text-white px-6 py-2 rounded-xl text-sm font-bold flex items-center gap-2">
+                class="w-full sm:w-auto bg-brand-purple-btn hover:opacity-90 text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all">
                 <i data-lucide="plus" class="w-4 h-4"></i>
-                Tambah Kategori
+                Tambah Aroma
             </button>
         </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
-                    <tr class="text-[10px] font-bold text-slate-400 uppercase tracking-wider border-y border-slate-50">
+                    <tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                         <th class="px-6 py-4">ID</th>
                         <th class="px-6 py-4">Nama Kategori</th>
                         <th class="px-6 py-4">Harga Aroma</th>
                         <th class="px-6 py-4 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @foreach ($aromaCategories as $cat)
-                        <!-- Modal Edit Aroma -->
-                        <div id="editAroma{{ $cat->id }}" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-                            <div class="bg-white rounded-xl p-6 w-96">
-                                <h2 class="text-lg font-bold mb-4">Edit Aroma</h2>
-                                <form action="{{ route('admin.aroma.update',$cat->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="mb-3">
-                                        <label class="text-sm font-medium">Nama Kategori</label>
-                                        <input type="text" name="nama_kategori" value="{{ $cat->nama_kategori }}" class="w-full border rounded-lg px-3 py-2 mt-1">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="text-sm font-medium">Harga Aroma</label>
-                                        <input type="number" name="biaya_kategori" value="{{ $cat->biaya_kategori }}" class="w-full border rounded-lg px-3 py-2 mt-1">
-                                    </div>
-                                    <div class="flex justify-end gap-2">
-                                        <button type="button" onclick="closeModal('editAroma{{ $cat->id }}')" class="px-4 py-2 text-gray-500">
-                                            Batal
-                                        </button>
-                                        <button class="bg-brand-purple-btn text-white px-4 py-2 rounded-lg">
-                                            Update
-                                        </button>
-                                    </div>
-                                </form>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse ($aromaCategories as $cat)
+                    <tr class="text-sm text-slate-600 hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 font-mono text-xs text-slate-400">
+                            #{{ str_pad($cat->id, 3, '0', STR_PAD_LEFT) }}
+                        </td>
+                        <td class="px-6 py-4 font-medium text-slate-800">
+                            {{ $cat->nama_kategori }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="font-semibold text-emerald-600">
+                                Rp {{ number_format($cat->biaya_kategori, 0, ',', '.') }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex justify-end gap-2">
+                                <button onclick="openModal('editAroma{{ $cat->id }}')"
+                                    class="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                                    title="Edit">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="openDeleteModal({{ $cat->id }})"
+                                    class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                    title="Hapus">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
                             </div>
-                        </div>
-
-                        <tr class="text-sm text-slate-600 hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-4 font-medium text-slate-400">
-                                {{ $cat->id }}
-                            </td>
-                            <td class="px-6 py-4 font-bold text-slate-800">
-                                {{ $cat->nama_kategori }}
-                            </td>
-                            <td class="px-6 py-4 font-medium text-emerald-600">
-                                Rp {{ number_format($cat->biaya_kategori,0,',','.') }}
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex justify-end gap-3">
-                                    <button onclick="openModal('editAroma{{ $cat->id }}')"
-                                        class="text-slate-400 hover:text-blue-500">
-                                        <i data-lucide="edit-3" class="w-4 h-4"></i>
-                                    </button>
-                                    <button onclick="openDeleteModal({{ $cat->id }})"
-                                        class="text-slate-400 hover:text-red-500">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                    </button>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="p-3 bg-slate-50 rounded-full">
+                                    <i data-lucide="inbox" class="w-6 h-6 text-slate-300"></i>
                                 </div>
-                            </td>
-                        </tr>
-                    @endforeach
+                                <p class="text-sm text-slate-400">Belum ada data aroma</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
+    </div>
 
-        
-
-        <!-- Modal Tambah Aroma -->
-        <div id="modalAroma" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-            <div class="bg-white rounded-xl p-6 w-96">
-                <h2 class="text-lg font-bold mb-4">Tambah Kategori Aroma</h2>
-                <form action="{{ route('admin.aroma.store') }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label class="text-sm font-medium">Nama Kategori</label>
-                        <input type="text" name="nama_kategori" class="w-full border rounded-lg px-3 py-2 mt-1">
-                    </div>
-                    <div class="mb-4">
-                        <label class="text-sm font-medium">Harga Aroma</label>
-                        <input type="number" name="biaya_kategori" class="w-full border rounded-lg px-3 py-2 mt-1">
-                    </div>
-                    <div class="flex justify-end gap-2">
-                        <button type="button" onclick="closeModal('modalAroma')" class="px-4 py-2 text-gray-500">
-                            Batal
-                        </button>
-                        <button class="bg-brand-purple-btn text-white px-4 py-2 rounded-lg">
-                            Simpan
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal Delete Aroma -->
-        <div id="deleteAromaModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-            <div class="bg-white rounded-xl p-6 w-96 shadow-lg">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="bg-red-100 p-2 rounded-lg">
-                        <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i>
-                    </div>
-                    <h2 class="text-lg font-bold text-gray-800">Hapus Aroma</h2>
+    {{-- Section Katalog Kemasan --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-amber-50 text-amber-600 rounded-xl">
+                    <i data-lucide="package" class="w-5 h-5"></i>
                 </div>
-                <p class="text-sm text-gray-500 mb-6">
-                    Apakah Anda yakin ingin menghapus kategori aroma ini? Data yang dihapus tidak dapat dikembalikan.
-                </p>
-                <form id="deleteAromaForm" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <div class="flex justify-end gap-3">
-                        <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 text-gray-500 hover:text-gray-700">
-                            Batal
-                        </button>
-                        <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
-                            Hapus
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- Modal Tambah Kemasan -->
-        <div id="modalKemasan" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-            <div class="bg-white rounded-xl p-6 w-96">
-                <h2 class="text-lg font-bold mb-4">Tambah Kemasan</h2>
-                <form action="{{ route('admin.kemasan.store') }}" method="POST">
-                    @csrf
-                    <div class="mb-3">
-                        <label class="text-sm font-medium">Jenis Botol</label>
-                        <input type="text" name="jenis_botol" class="w-full border rounded-lg px-3 py-2 mt-1">
-                    </div>
-                    <div class="mb-3">
-                        <label class="text-sm font-medium">Ukuran</label>
-                        <input type="text" name="ukuran" class="w-full border rounded-lg px-3 py-2 mt-1">
-                    </div>
-                    <div class="mb-3">
-                        <label class="text-sm font-medium">Jenis Box</label>
-                        <input type="text" name="jenis_box" class="w-full border rounded-lg px-3 py-2 mt-1">
-                    </div>
-                    <div class="mb-3">
-                        <label class="text-sm font-medium">Catatan</label>
-                        <textarea name="catatan" class="w-full border rounded-lg px-3 py-2 mt-1"></textarea>
-                    </div>
-                    <div class="mb-4">
-                        <label class="text-sm font-medium">Biaya Kemasan</label>
-                        <input type="number" name="biaya_kemasan" class="w-full border rounded-lg px-3 py-2 mt-1">
-                    </div>
-                    <div class="flex justify-end gap-2">
-                        <button type="button" onclick="closeModal('modalKemasan')" class="px-4 py-2 text-gray-500">
-                            Batal
-                        </button>
-                        <button class="bg-brand-purple-btn text-white px-4 py-2 rounded-lg">
-                            Simpan
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal Delete Kemasan -->
-        <div id="deleteKemasanModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-            <div class="bg-white rounded-xl p-6 w-96 shadow-lg">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="bg-red-100 p-2 rounded-lg">
-                        <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i>
-                    </div>
-                    <h2 class="text-lg font-bold text-gray-800">Hapus Kemasan</h2>
+                <div>
+                    <h3 class="font-bold text-slate-800">Katalog Kemasan</h3>
+                    <p class="text-xs text-slate-400">Daftar jenis kemasan dan biayanya</p>
                 </div>
-                <p class="text-sm text-gray-500 mb-6">
-                    Apakah Anda yakin ingin menghapus kemasan ini? Data yang dihapus tidak dapat dikembalikan.
-                </p>
-                <form id="deleteKemasanForm" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <div class="flex justify-end gap-3">
-                        <button type="button" onclick="closeDeleteKemasanModal()" class="px-4 py-2 text-gray-500 hover:text-gray-700">
-                            Batal
-                        </button>
-                        <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
-                            Hapus
-                        </button>
-                    </div>
-                </form>
             </div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="p-6 flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 bg-purple-50 text-brand-purple rounded-lg">
-                        <i data-lucide="package" class="w-5 h-5"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-lg">Katalog Kemasan</h3>
-                </div>
-                <button onclick="openModal('modalKemasan')" 
-                class="bg-brand-purple-btn hover:opacity-90 text-white px-6 py-2 rounded-xl text-sm font-bold flex items-center gap-2">
-
+            <button onclick="openModal('modalKemasan')" 
+                class="w-full sm:w-auto bg-brand-purple-btn hover:opacity-90 text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 Tambah Kemasan
-
-                </button>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                    <tr class="text-[10px] font-bold text-slate-400 uppercase tracking-wider border-y border-slate-50">
-                    <th class="px-6 py-4">ID</th>
-                    <th class="px-6 py-4">Jenis Botol</th>
-                    <th class="px-6 py-4">Ukuran</th>
-                    <th class="px-6 py-4">Jenis Box</th>
-                    <th class="px-6 py-4">Catatan</th>
-                    <th class="px-6 py-4">Biaya</th>
-                    <th class="px-6 py-4 text-right">Aksi</th>
-                    </tr>
-                    </thead>
-
-                    <tbody class="divide-y divide-slate-50">
-
-                    @foreach ($packagingItems as $item)
-                        <!-- Modal Edit Kemasan -->
-                        <div id="editKemasan{{ $item->id }}"
-                            class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-                            <div class="bg-white rounded-xl p-6 w-96">
-                                <h2 class="text-lg font-bold mb-4">Edit Kemasan</h2>
-                                <form action="{{ route('admin.kemasan.update',$item->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="mb-3">
-                                        <label class="text-sm font-medium">Jenis Botol</label>
-                                        <input type="text" name="jenis_botol" value="{{ $item->jenis_botol }}" class="w-full border rounded-lg px-3 py-2 mt-1">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="text-sm font-medium">Ukuran</label>
-                                        <input type="text" name="ukuran" value="{{ $item->ukuran }}" class="w-full border rounded-lg px-3 py-2 mt-1">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="text-sm font-medium">Jenis Box</label>
-                                        <input type="text" name="jenis_box" value="{{ $item->jenis_box }}" class="w-full border rounded-lg px-3 py-2 mt-1">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="text-sm font-medium">Catatan</label>
-                                        <textarea name="catatan" class="w-full border rounded-lg px-3 py-2 mt-1">{{ $item->catatan }}</textarea>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="text-sm font-medium">Biaya Kemasan</label>
-                                        <input type="number" name="biaya_kemasan" value="{{ $item->biaya_kemasan }}" class="w-full border rounded-lg px-3 py-2 mt-1">
-                                    </div>
-                                    <div class="flex justify-end gap-2">
-                                        <button type="button" onclick="closeModal('editKemasan{{ $item->id }}')" class="px-4 py-2 text-gray-500">
-                                            Batal
-                                        </button>
-                                        <button class="bg-brand-purple-btn text-white px-4 py-2 rounded-lg">
-                                            Update
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <tr class="text-sm text-slate-600 hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-4 font-medium text-slate-400">
-                                {{ $item->id }}
-                            </td>
-                            <td class="px-6 py-4 font-bold text-slate-800">
-                                {{ $item->jenis_botol }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ $item->ukuran }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ $item->jenis_box }}
-                            </td>
-                            <td class="px-6 py-4 text-xs italic">
-                                {{ $item->catatan }}
-                            </td>
-                            <td class="px-6 py-4 font-bold text-emerald-600">
-                                Rp {{ number_format($item->biaya_kemasan,0,',','.') }}
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex justify-end gap-3">
-                                    <button onclick="openModal('editKemasan{{ $item->id }}')"
-                                        class="text-slate-400 hover:text-blue-500">
-                                        <i data-lucide="edit-3" class="w-4 h-4"></i>
-                                    </button>
-                                    <button onclick="openDeleteKemasanModal({{ $item->id }})"
-                                        class="text-slate-400 hover:text-red-500">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-
-                    </tbody>
-                </table>
-            </div>
-            <button class="bg-brand-purple-btn hover:opacity-90 text-white px-6 py-2 rounded-xl text-sm font-bold flex items-center gap-2">
-                <i data-lucide="plus" class="w-4 h-4"></i> Tambah Kemasan
             </button>
         </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
-                    <tr class="text-[10px] font-bold text-slate-400 uppercase tracking-wider border-y border-slate-50">
+                    <tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                         <th class="px-6 py-4">ID</th>
                         <th class="px-6 py-4">Jenis Botol</th>
                         <th class="px-6 py-4">Ukuran</th>
@@ -360,113 +179,318 @@
                         <th class="px-6 py-4 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @foreach ($packagingItems as $item)
+                <tbody class="divide-y divide-slate-100">
+                    @forelse ($packagingItems as $item)
                     <tr class="text-sm text-slate-600 hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-medium text-slate-400">{{ $item->id }}</td>
-                        <td class="px-6 py-4 font-bold text-slate-800">{{ $item->jenis_botol }}</td>
-                        <td class="px-6 py-4">{{ $item->ukuran }}</td>
-                        <td class="px-6 py-4">{{ $item->jenis_box }}</td>
-                        <td class="px-6 py-4 text-xs italic">{{ $item->catatan }}</td>
-                        <td class="px-6 py-4 font-bold text-emerald-600">
-                            Rp {{ number_format($item->biaya_kemasan,0,',','.') }}
+                        <td class="px-6 py-4 font-mono text-xs text-slate-400">
+                            #{{ str_pad($item->id, 3, '0', STR_PAD_LEFT) }}
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex justify-end gap-3">
-                                <button class="text-slate-400 hover:text-blue-500">
+                        <td class="px-6 py-4 font-medium text-slate-800">
+                            {{ $item->jenis_botol }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $item->ukuran }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $item->jenis_box ?: '-' }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-xs italic {{ $item->catatan ? 'text-slate-500' : 'text-slate-300' }}">
+                                {{ $item->catatan ?: '-' }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="font-semibold text-emerald-600">
+                                Rp {{ number_format($item->biaya_kemasan, 0, ',', '.') }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex justify-end gap-2">
+                                <button onclick="openModal('editKemasan{{ $item->id }}')"
+                                    class="p-2 text-slate-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                                    title="Edit">
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </button>
-                                <form action="{{ route('admin.kemasan.delete',$item->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="text-slate-400 hover:text-red-500">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                    </button>
-                                </form>
+                                <button onclick="openDeleteKemasanModal({{ $item->id }})"
+                                    class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                    title="Hapus">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="p-3 bg-slate-50 rounded-full">
+                                    <i data-lucide="package" class="w-6 h-6 text-slate-300"></i>
+                                </div>
+                                <p class="text-sm text-slate-400">Belum ada data kemasan</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
     </div>
 
-    <footer class="mt-12 text-center">
-        <p class="text-[10px] text-slate-400">© 2024 PT Arum Jaya Gemilang. All rights reserved. Perfume Manufacturing Dashboard v2.0</p>
+    {{-- Footer --}}
+    <footer class="pt-6 text-center">
+        <p class="text-[11px] text-slate-400">© 2024 PT Arum Jaya Gemilang. All rights reserved. Perfume Manufacturing Dashboard v2.0</p>
     </footer>
+</div>
 @endsection
 
 @push('modals')
-    {{-- Modal Tambah Aroma --}}
-    <div id="modalAroma" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl p-6 w-96">
-            <h2 class="text-lg font-bold mb-4">Tambah Kategori Aroma</h2>
-            <form action="{{ route('admin.aroma.store') }}" method="POST">
-                @csrf
-                <div class="mb-3">
-                    <label class="text-sm font-medium">Nama Kategori</label>
-                    <input type="text" name="nama_kategori" class="w-full border rounded-lg px-3 py-2 mt-1">
-                </div>
-                <div class="mb-4">
-                    <label class="text-sm font-medium">Harga Aroma</label>
-                    <input type="number" name="biaya_kategori" class="w-full border rounded-lg px-3 py-2 mt-1">
-                </div>
-                <div class="flex justify-end gap-2">
-                    <button type="button" onclick="closeModal('modalAroma')" class="px-4 py-2 text-gray-500">Batal</button>
-                    <button class="bg-brand-purple-btn text-white px-4 py-2 rounded-lg">Simpan</button>
-                </div>
-            </form>
+{{-- Modal Tambah Aroma --}}
+<div id="modalAroma" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-slate-800">Tambah Aroma</h2>
+            <button onclick="closeModal('modalAroma')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                <i data-lucide="x" class="w-5 h-5 text-slate-400"></i>
+            </button>
         </div>
-    </div>
-
-    {{-- Modal Edit Aroma --}}
-    @foreach ($aromaCategories as $cat)
-    <div id="editAroma{{ $cat->id }}" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl p-6 w-96">
-            <h2 class="text-lg font-bold mb-4">Edit Aroma</h2>
-            <form action="{{ route('admin.aroma.update',$cat->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="mb-3">
-                    <label class="text-sm font-medium">Nama Kategori</label>
-                    <input type="text" name="nama_kategori" value="{{ $cat->nama_kategori }}" class="w-full border rounded-lg px-3 py-2 mt-1">
-                </div>
-                <div class="mb-4">
-                    <label class="text-sm font-medium">Harga Aroma</label>
-                    <input type="number" name="biaya_kategori" value="{{ $cat->biaya_kategori }}" class="w-full border rounded-lg px-3 py-2 mt-1">
-                </div>
-                <div class="flex justify-end gap-2">
-                    <button type="button" onclick="closeModal('editAroma{{ $cat->id }}')" class="px-4 py-2 text-gray-500">Batal</button>
-                    <button class="bg-brand-purple-btn text-white px-4 py-2 rounded-lg">Update</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    @endforeach
-
-    {{-- Modal Delete Aroma --}}
-    <div id="deleteAromaModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl p-6 w-96 shadow-lg">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="bg-red-100 p-2 rounded-lg">
-                    <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i>
-                </div>
-                <h2 class="text-lg font-bold text-gray-800">Hapus Aroma</h2>
+        <form action="{{ route('admin.aroma.store') }}" method="POST" class="space-y-4">
+            @csrf
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Nama Kategori</label>
+                <input type="text" name="nama_kategori" required
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
             </div>
-            <p class="text-sm text-gray-500 mb-6">
-                Apakah Anda yakin ingin menghapus kategori aroma ini? Data yang dihapus tidak dapat dikembalikan.
-            </p>
-            <form id="deleteAromaForm" method="POST">
-                @csrf
-                @method('DELETE')
-                <div class="flex justify-end gap-3">
-                    <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 text-gray-500 hover:text-gray-700">Batal</button>
-                    <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">Hapus</button>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Harga Aroma</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
+                    <input type="number" name="biaya_kategori" required
+                        class="w-full border border-slate-200 rounded-xl pl-12 pr-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
                 </div>
-            </form>
-        </div>
+            </div>
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="closeModal('modalAroma')" 
+                    class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+                    Batal
+                </button>
+                <button type="submit" 
+                    class="px-5 py-2.5 bg-brand-purple-btn text-white text-sm font-medium rounded-xl hover:opacity-90 transition-all">
+                    Simpan
+                </button>
+            </div>
+        </form>
     </div>
+</div>
+
+{{-- Modal Tambah Kemasan --}}
+<div id="modalKemasan" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-slate-800">Tambah Kemasan</h2>
+            <button onclick="closeModal('modalKemasan')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                <i data-lucide="x" class="w-5 h-5 text-slate-400"></i>
+            </button>
+        </div>
+        <form action="{{ route('admin.kemasan.store') }}" method="POST" class="space-y-4">
+            @csrf
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Botol</label>
+                <input type="text" name="jenis_botol" required
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Ukuran</label>
+                <input type="text" name="ukuran" required
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Box</label>
+                <input type="text" name="jenis_box"
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Catatan</label>
+                <textarea name="catatan" rows="2"
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all"></textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Biaya Kemasan</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
+                    <input type="number" name="biaya_kemasan" required
+                        class="w-full border border-slate-200 rounded-xl pl-12 pr-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="closeModal('modalKemasan')" 
+                    class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+                    Batal
+                </button>
+                <button type="submit" 
+                    class="px-5 py-2.5 bg-brand-purple-btn text-white text-sm font-medium rounded-xl hover:opacity-90 transition-all">
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Modal Edit Aroma (Dynamic) --}}
+@foreach ($aromaCategories as $cat)
+<div id="editAroma{{ $cat->id }}" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-slate-800">Edit Aroma</h2>
+            <button onclick="closeModal('editAroma{{ $cat->id }}')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                <i data-lucide="x" class="w-5 h-5 text-slate-400"></i>
+            </button>
+        </div>
+        <form action="{{ route('admin.aroma.update', $cat->id) }}" method="POST" class="space-y-4">
+            @csrf
+            @method('PUT')
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Nama Kategori</label>
+                <input type="text" name="nama_kategori" value="{{ $cat->nama_kategori }}" required
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Harga Aroma</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
+                    <input type="number" name="biaya_kategori" value="{{ $cat->biaya_kategori }}" required
+                        class="w-full border border-slate-200 rounded-xl pl-12 pr-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="closeModal('editAroma{{ $cat->id }}')" 
+                    class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+                    Batal
+                </button>
+                <button type="submit" 
+                    class="px-5 py-2.5 bg-brand-purple-btn text-white text-sm font-medium rounded-xl hover:opacity-90 transition-all">
+                    Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
+{{-- Modal Edit Kemasan (Dynamic) --}}
+@foreach ($packagingItems as $item)
+<div id="editKemasan{{ $item->id }}" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-slate-800">Edit Kemasan</h2>
+            <button onclick="closeModal('editKemasan{{ $item->id }}')" class="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                <i data-lucide="x" class="w-5 h-5 text-slate-400"></i>
+            </button>
+        </div>
+        <form action="{{ route('admin.kemasan.update', $item->id) }}" method="POST" class="space-y-4">
+            @csrf
+            @method('PUT')
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Botol</label>
+                <input type="text" name="jenis_botol" value="{{ $item->jenis_botol }}" required
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Ukuran</label>
+                <input type="text" name="ukuran" value="{{ $item->ukuran }}" required
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Jenis Box</label>
+                <input type="text" name="jenis_box" value="{{ $item->jenis_box }}"
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Catatan</label>
+                <textarea name="catatan" rows="2"
+                    class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">{{ $item->catatan }}</textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Biaya Kemasan</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
+                    <input type="number" name="biaya_kemasan" value="{{ $item->biaya_kemasan }}" required
+                        class="w-full border border-slate-200 rounded-xl pl-12 pr-4 py-2.5 focus:ring-2 focus:ring-purple-300 focus:border-brand-purple transition-all">
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 pt-4">
+                <button type="button" onclick="closeModal('editKemasan{{ $item->id }}')" 
+                    class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+                    Batal
+                </button>
+                <button type="submit" 
+                    class="px-5 py-2.5 bg-brand-purple-btn text-white text-sm font-medium rounded-xl hover:opacity-90 transition-all">
+                    Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
+{{-- Modal Delete Aroma --}}
+<div id="deleteAromaModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <div class="flex items-center gap-4 mb-6">
+            <div class="p-3 bg-red-50 rounded-full">
+                <i data-lucide="alert-triangle" class="w-6 h-6 text-red-500"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-slate-800">Hapus Aroma</h2>
+                <p class="text-sm text-slate-500">Tindakan ini tidak dapat dibatalkan</p>
+            </div>
+        </div>
+        <p class="text-sm text-slate-600 mb-6">
+            Apakah Anda yakin ingin menghapus kategori aroma ini? Data yang dihapus tidak dapat dikembalikan.
+        </p>
+        <form id="deleteAromaForm" method="POST" class="flex justify-end gap-3">
+            @csrf
+            @method('DELETE')
+            <button type="button" onclick="closeDeleteModal()" 
+                class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+                Batal
+            </button>
+            <button type="submit" 
+                class="px-5 py-2.5 bg-red-500 text-white text-sm font-medium rounded-xl hover:bg-red-600 transition-colors">
+                Hapus
+            </button>
+        </form>
+    </div>
+</div>
+
+{{-- Modal Delete Kemasan --}}
+<div id="deleteKemasanModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <div class="flex items-center gap-4 mb-6">
+            <div class="p-3 bg-red-50 rounded-full">
+                <i data-lucide="alert-triangle" class="w-6 h-6 text-red-500"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-slate-800">Hapus Kemasan</h2>
+                <p class="text-sm text-slate-500">Tindakan ini tidak dapat dibatalkan</p>
+            </div>
+        </div>
+        <p class="text-sm text-slate-600 mb-6">
+            Apakah Anda yakin ingin menghapus kemasan ini? Data yang dihapus tidak dapat dikembalikan.
+        </p>
+        <form id="deleteKemasanForm" method="POST" class="flex justify-end gap-3">
+            @csrf
+            @method('DELETE')
+            <button type="button" onclick="closeDeleteKemasanModal()" 
+                class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+                Batal
+            </button>
+            <button type="submit" 
+                class="px-5 py-2.5 bg-red-500 text-white text-sm font-medium rounded-xl hover:bg-red-600 transition-colors">
+                Hapus
+            </button>
+        </form>
+    </div>
+</div>
 @endpush
 
 @push('scripts')
@@ -476,6 +500,7 @@
     function openModal(id) {
         document.getElementById(id).classList.remove('hidden');
         document.getElementById(id).classList.add('flex');
+        lucide.createIcons();
     }
 
     function closeModal(id) {
@@ -483,12 +508,34 @@
         document.getElementById(id).classList.add('hidden');
     }
 
+    function closeAlert(id) {
+        const alert = document.getElementById(id);
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+            alert.remove();
+        }, 300);
+    }
+
+    // Auto-dismiss notifications after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('[id$="Alert"]');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                if (alert && alert.parentNode) {
+                    closeAlert(alert.id);
+                }
+            }, 5000);
+        });
+    });
+
     function openDeleteModal(id) {
         let modal = document.getElementById('deleteAromaModal');
         let form = document.getElementById('deleteAromaForm');
-        form.action = "/admin/aroma/" + id;
+        form.action = "{{ url('admin/aroma') }}/" + id;
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+        lucide.createIcons();
     }
 
     function closeDeleteModal() {
@@ -500,15 +547,24 @@
     function openDeleteKemasanModal(id) {
         let modal = document.getElementById('deleteKemasanModal');
         let form = document.getElementById('deleteKemasanForm');
-        form.action = "/admin/kemasan/" + id;
+        form.action = "{{ url('admin/kemasan') }}/" + id;
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+        lucide.createIcons();
     }
 
     function closeDeleteKemasanModal() {
         let modal = document.getElementById('deleteKemasanModal');
         modal.classList.remove('flex');
         modal.classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('bg-black/40')) {
+            event.target.classList.remove('flex');
+            event.target.classList.add('hidden');
+        }
     }
 </script>
 @endpush

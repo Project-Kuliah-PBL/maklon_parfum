@@ -30,12 +30,31 @@ class RiwayatPesananController extends Controller
     {
         $navItems = $this->getNavItems();
 
-        // Ambil SEMUA data pengajuan dengan relasi
-        $orders = Pengajuan::with(['user', 'hargaParfum', 'pembayarans'])
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(10);
+        // Ambil parameter search dan filter
+        $search = $request->input('search');
+        $status = $request->input('status');
 
-        // Hitung statistik untuk header
+        // Query dasar dengan relasi
+        $query = Pengajuan::with(['user', 'hargaParfum', 'pembayarans']);
+
+        // Apply search jika ada - menggunakan when()
+        $query->when($search, function($q) use ($search) {
+            return $q->whereHas('user', function($userQuery) use ($search) {
+                $userQuery->where('name', 'LIKE', "%{$search}%");
+            });
+        });
+
+        // Apply status filter jika ada - menggunakan when()
+        $query->when($status, function($q) use ($status) {
+            return $q->where('status', $status);
+        });
+
+        // Ambil data dengan pagination, pertahankan parameter search dan filter
+        $orders = $query->orderBy('created_at', 'desc')
+                    ->paginate(10)
+                    ->withQueryString();
+
+        // Hitung statistik untuk header (tetap menggunakan semua data)
         $totalPesanan = Pengajuan::count();
         $pesananSelesai = Pengajuan::where('status', 'Selesai')->count();
         $pesananProses = Pengajuan::whereIn('status', ['Diproses', 'Proses', 'Menunggu', 'Pending'])->count();
@@ -74,12 +93,12 @@ class RiwayatPesananController extends Controller
                 'icon' => 'wallet',
                 'label' => 'Total Pendapatan',
                 'value' => 'Rp ' . number_format($totalPendapatan, 0, ',', '.'),
-                'trend' => 'Dari semua pembayaran',
+                'trend' => '',
                 'color' => 'bg-orange-100 text-orange-600'
             ],
         ];
 
-        return view('admin.riwayat-pesanan', compact('navItems', 'orders', 'stats'));
+        return view('admin.riwayat-pesanan', compact('navItems', 'orders', 'stats', 'search', 'status'));
     }
 
     /**
@@ -90,21 +109,22 @@ class RiwayatPesananController extends Controller
         $order = Pengajuan::with(['user', 'hargaParfum', 'pembayarans', 'aromas', 'kemasans'])
                     ->findOrFail($id);
 
-        // Hitung total pembayaran dari tabel pembayarans
+        // TOTAL HARGA diambil dari jumlah semua pembayaran (kolom total) di tabel pembayarans
         $totalPembayaran = $order->pembayarans->sum('total') ?? 0;
-        $totalHarga = $order->total_harga ?? 0;
-        $sisaPembayaran = $totalHarga - $totalPembayaran;
+        
+        // Karena tidak ada kolom total_harga di tabel pengajuans,
+        // kita asumsikan total harga pesanan adalah jumlah dari semua pembayaran
+        $totalHarga = $totalPembayaran;
+        $sisaPembayaran = 0; // Tidak ada sisa karena totalHarga = totalPembayaran
 
-        // Tentukan status pembayaran
+        // Tentukan status pembayaran berdasarkan jumlah pembayaran
         if ($totalPembayaran == 0) {
             $paymentStatus = 'Belum Dibayar';
             $paymentColor = 'bg-red-100 text-red-600';
-        } elseif ($totalPembayaran >= $totalHarga) {
-            $paymentStatus = 'Lunas';
-            $paymentColor = 'bg-emerald-100 text-emerald-600';
         } else {
-            $paymentStatus = 'Angsuran (Rp ' . number_format($sisaPembayaran, 0, ',', '.') . ')';
-            $paymentColor = 'bg-orange-100 text-orange-600';
+            // Jika sudah ada pembayaran, tampilkan total yang sudah dibayar
+            $paymentStatus = 'Dibayar (Rp ' . number_format($totalPembayaran, 0, ',', '.') . ')';
+            $paymentColor = 'bg-emerald-100 text-emerald-600';
         }
 
         // Dapatkan daftar aroma
@@ -125,9 +145,12 @@ class RiwayatPesananController extends Controller
             ];
         });
 
+        // Buat ID pesanan format PJ-XXXXX
+        $orderId = 'PJ-' . str_pad($order->id, 5, '0', STR_PAD_LEFT);
+
         return response()->json([
             'id' => $order->id,
-            'no_pengajuan' => $order->no_pengajuan ?? 'PJ-' . str_pad($order->id, 5, '0', STR_PAD_LEFT),
+            'no_pengajuan' => $orderId,
             'client' => $order->user->name ?? 'N/A',
             'initial' => $this->getInitials($order->user->name ?? 'N/A'),
             'product' => $order->hargaParfum->nama_parfum ?? 'Produk',
@@ -136,10 +159,10 @@ class RiwayatPesananController extends Controller
             'quantity' => number_format($order->jumlah, 0, ',', '.') . ' unit',
             'order_date' => $order->created_at->format('Y-m-d'),
             'completion_date' => $order->updated_at->format('Y-m-d'),
-            'total_harga' => 'Rp ' . number_format($totalHarga, 0, ',', '.'),
+            'total_harga' => 'Rp ' . number_format($totalHarga, 0, ',', '.'), // Dari total pembayaran
             'total_pembayaran' => 'Rp ' . number_format($totalPembayaran, 0, ',', '.'),
             'sisa_pembayaran' => 'Rp ' . number_format($sisaPembayaran, 0, ',', '.'),
-            'total' => 'Rp ' . number_format($totalPembayaran, 0, ',', '.'), // Ini yang akan ditampilkan di tabel
+            'total' => 'Rp ' . number_format($totalPembayaran, 0, ',', '.'),
             'status' => $order->status,
             'status_color' => $this->getStatusColor($order->status),
             'payment_status' => $paymentStatus,
@@ -174,9 +197,9 @@ class RiwayatPesananController extends Controller
             'Batal' => 'bg-red-100 text-red-600',
             'Dalam Pengiriman' => 'bg-blue-100 text-blue-600',
             'Menunggu' => 'bg-yellow-100 text-yellow-600',
-            'Pending' => 'bg-orange-100 text-orange-600',
-            'Diproses' => 'bg-purple-100 text-purple-600',
-            'Proses' => 'bg-purple-100 text-purple-600'
+            'Pending' => 'bg-yellow-100 text-yellow-600',
+            'Diproses' => 'bg-blue-100 text-blue-600',
+            'Proses' => 'bg-blue-100 text-blue-600'
         ];
 
         return $colors[$status] ?? 'bg-slate-100 text-slate-600';
@@ -213,18 +236,17 @@ class RiwayatPesananController extends Controller
         // Data CSV
         foreach ($orders as $order) {
             $totalPembayaran = $order->pembayarans->sum('total') ?? 0;
+            $orderId = 'PJ-' . str_pad($order->id, 5, '0', STR_PAD_LEFT);
             
             // Tentukan status pembayaran
             if ($totalPembayaran == 0) {
                 $paymentStatus = 'Belum Dibayar';
-            } elseif ($totalPembayaran >= ($order->total_harga ?? 0)) {
-                $paymentStatus = 'Lunas';
             } else {
-                $paymentStatus = 'Angsuran';
+                $paymentStatus = 'Dibayar (Rp ' . number_format($totalPembayaran, 0, ',', '.') . ')';
             }
             
             fputcsv($handle, [
-                $order->no_pengajuan ?? 'PJ-' . str_pad($order->id, 5, '0', STR_PAD_LEFT),
+                $orderId,
                 $order->user->name ?? 'N/A',
                 $order->hargaParfum->nama_parfum ?? 'Produk',
                 number_format($order->jumlah, 0, ',', '.') . ' unit',

@@ -38,7 +38,7 @@ class KomponenProduksiController extends Controller
     {
         Aroma::findOrFail($id)->delete();
 
-        return back()->with('success','Aroma berhasil dihapus');
+        return back()->with('deleted','Aroma berhasil dihapus');
     }
 
 
@@ -71,7 +71,7 @@ class KomponenProduksiController extends Controller
     {
         Kemasan::findOrFail($id)->delete();
 
-        return back()->with('success','Kemasan berhasil dihapus');
+        return back()->with('deleted','Kemasan berhasil dihapus');
     }
 
 }

@@ -10,3 +10,12 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Mungkin ada definisi seperti ini: */
+.bg-brand-purple {
+    background-color: #6B46C1; /* atau warna ungu lainnya */
+}
+
+.bg-brand-purple-btn {
+    background-color: #805AD5; /* atau warna yang berbeda */
+}
