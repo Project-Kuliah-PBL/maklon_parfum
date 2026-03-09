@@ -11,7 +11,7 @@ class PemesananController extends Controller
      */
     public function pengajuan()
     {
-        return view('pemesanan.pengajuan_maklon');
+        return view('user.pemesanan.pengajuan_maklon');
     }
 
     /**
@@ -19,7 +19,7 @@ class PemesananController extends Controller
      */
     public function pilihAroma()
     {
-        return view('pemesanan.piliharoma');
+        return view('user.pemesanan.piliharoma');
     }
 
     /**
@@ -27,7 +27,7 @@ class PemesananController extends Controller
      */
     public function checkout()
     {
-        return view('pemesanan.checkout');
+        return view('user.pemesanan.checkout');
     }
 
     /**
@@ -36,7 +36,7 @@ class PemesananController extends Controller
     public function store(Request $request)
     {
         // Logic untuk menyimpan pengajuan akan diisi nanti
-        return redirect()->route('pemesanan.pilih-aroma')->with('success', 'Pengajuan berhasil disimpan');
+        return redirect()->route('user.pemesanan.pilih-aroma')->with('success', 'Pengajuan berhasil disimpan');
     }
 
     /**
@@ -45,6 +45,6 @@ class PemesananController extends Controller
     public function processCheckout(Request $request)
     {
         // Logic untuk proses checkout akan diisi nanti
-        return redirect()->route('tracking.index')->with('success', 'Pesanan berhasil diproses');
+        return redirect()->route('user.tracking.index')->with('success', 'Pesanan berhasil diproses');
     }
 }

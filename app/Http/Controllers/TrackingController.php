@@ -19,6 +19,6 @@ class TrackingController extends Controller
      */
     public function detail($id)
     {
-        return view('tracking.detail_user', ['id' => $id]);
+        return view('user.tracking.detail_user', ['id' => $id]);
     }
 }

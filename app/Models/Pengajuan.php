@@ -63,7 +63,7 @@ class Pengajuan extends Model
 
     public function pembayaran()
     {
-        return $this->hasMany(Pembayaran::class);
+        return $this->hasMany(Pembayaran::class, 'pengajuan_id');
     }
 
     /*
@@ -88,7 +88,7 @@ class Pengajuan extends Model
     public function kemasans()
     {
         return $this->belongsToMany(Kemasan::class, 'pengajuan_kemasans')
-                    ->withPivot('aroma_id','logo_label')
+                    ->withPivot('aroma_id', 'logo_label')
                     ->withTimestamps();
     }
 }

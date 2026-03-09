@@ -14,7 +14,6 @@ class AdminDashboardController extends Controller
 {
     /**
      * Menyediakan data navigasi untuk semua halaman admin.
-     * Menu telah diringkas menjadi 4 kategori utama.
      */
     private function getNavItems()
     {
@@ -23,6 +22,7 @@ class AdminDashboardController extends Controller
             ['icon' => 'file-text', 'label' => 'Pengajuan', 'route' => 'admin.pengajuan'],
             ['icon' => 'flask-conical', 'label' => 'Produksi', 'route' => 'admin.produksi'],
             ['icon' => 'package', 'label' => 'Komponen Produksi', 'route' => 'admin.komponen.produksi'],
+            ['icon' => 'archive', 'label' => 'Riwayat Pesanan', 'route' => 'admin.riwayat.pesanan'], // Menu baru
         ];
     }
 
@@ -106,7 +106,7 @@ class AdminDashboardController extends Controller
     }
 
     /**
-     * Halaman Monitoring Produksi (Batch Management)
+     * Halaman Monitoring Produksi
      */
     public function produksi()
     {
@@ -146,5 +146,111 @@ class AdminDashboardController extends Controller
             'aromaCategories',
             'packagingItems'
         ));
+    }
+
+    /**
+     * Halaman Riwayat Pesanan
+     */
+    public function riwayatPesanan()
+    {
+        $navItems = $this->getNavItems();
+
+        // Data contoh riwayat pesanan
+        $orders = [
+            [
+                'id' => 'ORD-2024-001',
+                'client' => 'Brand Parfum ABC',
+                'initial' => 'BP',
+                'product' => 'Eau de Parfum - Citrus',
+                'quantity' => '2,500 unit',
+                'order_date' => '2024-01-15',
+                'completion_date' => '2024-02-20',
+                'total' => 'Rp 187.500.000',
+                'status' => 'SELESAI',
+                'status_color' => 'bg-emerald-100 text-emerald-600'
+            ],
+            [
+                'id' => 'ORD-2024-002',
+                'client' => 'Luxe Mist Co.',
+                'initial' => 'LM',
+                'product' => 'Eau de Toilette - Ocean',
+                'quantity' => '1,000 unit',
+                'order_date' => '2024-01-20',
+                'completion_date' => '2024-02-25',
+                'total' => 'Rp 75.000.000',
+                'status' => 'SELESAI',
+                'status_color' => 'bg-emerald-100 text-emerald-600'
+            ],
+            [
+                'id' => 'ORD-2024-003',
+                'client' => 'Essence Co.',
+                'initial' => 'EC',
+                'product' => 'Parfum - Midnight Bloom',
+                'quantity' => '3,500 unit',
+                'order_date' => '2024-02-01',
+                'completion_date' => '2024-03-10',
+                'total' => 'Rp 262.500.000',
+                'status' => 'DALAM PENGIRIMAN',
+                'status_color' => 'bg-blue-100 text-blue-600'
+            ],
+            [
+                'id' => 'ORD-2024-004',
+                'client' => 'Aroma Terrace',
+                'initial' => 'AT',
+                'product' => 'Eau de Parfum - Floral',
+                'quantity' => '1,500 unit',
+                'order_date' => '2024-02-10',
+                'completion_date' => '2024-03-15',
+                'total' => 'Rp 112.500.000',
+                'status' => 'SELESAI',
+                'status_color' => 'bg-emerald-100 text-emerald-600'
+            ],
+            [
+                'id' => 'ORD-2024-005',
+                'client' => 'Parfum Deluxe',
+                'initial' => 'PD',
+                'product' => 'Eau de Toilette - Woody',
+                'quantity' => '2,000 unit',
+                'order_date' => '2024-02-15',
+                'completion_date' => '2024-03-20',
+                'total' => 'Rp 150.000.000',
+                'status' => 'DALAM PENGIRIMAN',
+                'status_color' => 'bg-blue-100 text-blue-600'
+            ],
+        ];
+
+        // Statistik untuk header
+        $stats = [
+            [
+                'icon' => 'shopping-bag',
+                'label' => 'Total Pesanan',
+                'value' => '156',
+                'trend' => '+12 bulan ini',
+                'color' => 'bg-purple-100 text-purple-600'
+            ],
+            [
+                'icon' => 'check-circle',
+                'label' => 'Pesanan Selesai',
+                'value' => '142',
+                'trend' => '91% sukses',
+                'color' => 'bg-emerald-100 text-emerald-600'
+            ],
+            [
+                'icon' => 'truck',
+                'label' => 'Dalam Pengiriman',
+                'value' => '14',
+                'trend' => 'Estimasi 3-5 hari',
+                'color' => 'bg-blue-100 text-blue-600'
+            ],
+            [
+                'icon' => 'wallet',
+                'label' => 'Total Pendapatan',
+                'value' => 'Rp 12.8M',
+                'trend' => 'Bulan ini',
+                'color' => 'bg-orange-100 text-orange-600'
+            ],
+        ];
+
+        return view('admin.riwayat-pesanan', compact('navItems', 'orders', 'stats'));
     }
 }

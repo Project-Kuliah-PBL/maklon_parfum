@@ -9,6 +9,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\KomponenProduksiController;
+use App\Http\Controllers\Admin\RiwayatPesananController;
 
 /*
 |--------------------------------------------------------------------------
@@ -166,6 +167,12 @@ Route::prefix('admin')
 
     Route::get('/komponen-produksi', [AdminDashboardController::class, 'komponenproduksi'])
         ->name('komponen.produksi');
+
+     // Routes untuk Riwayat Pesanan
+    Route::get('/riwayat-pesanan', [RiwayatPesananController::class, 'index'])->name('riwayat.pesanan');
+    Route::get('/riwayat-pesanan/{id}', [RiwayatPesananController::class, 'show'])->name('riwayat.show');
+    Route::get('/riwayat-pesanan/export/csv', [RiwayatPesananController::class, 'exportCsv'])->name('riwayat.export.csv');
+    Route::get('/riwayat-pesanan/export/pdf', [RiwayatPesananController::class, 'exportPdf'])->name('riwayat.export.pdf');
     /*
     CRUD AROMA
     */
