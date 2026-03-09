@@ -8,6 +8,7 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\KomponenProduksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +16,19 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [PageController::class, 'home'])->name('home');
-Route::get('/layanan', [PageController::class, 'layanan'])->name('layanan');
-Route::get('/layanan/{jenis}', [PageController::class, 'detailLayanan'])->name('detail.layanan');
-Route::get('/tentang-kami', [PageController::class, 'tentangKami'])->name('tentang-kami');
-Route::get('/kontak', [PageController::class, 'kontak'])->name('kontak');
+Route::controller(PageController::class)->group(function () {
+
+    Route::get('/', 'home')->name('home');
+
+    Route::get('/layanan', 'layanan')->name('layanan');
+
+    Route::get('/layanan/{jenis}', 'detailLayanan')->name('detail.layanan');
+
+    Route::get('/tentang-kami', 'tentangKami')->name('tentang-kami');
+
+    Route::get('/kontak', 'kontak')->name('kontak');
+
+});
 
 
 /*
@@ -28,13 +37,15 @@ Route::get('/kontak', [PageController::class, 'kontak'])->name('kontak');
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('guest')->group(function(){
+Route::middleware('guest')->controller(AuthController::class)->group(function () {
 
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/login', 'showLoginForm')->name('login');
 
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', 'login');
+
+    Route::get('/register', 'showRegisterForm')->name('register');
+
+    Route::post('/register', 'register');
 
 });
 
@@ -46,92 +57,89 @@ Route::middleware('guest')->group(function(){
 */
 
 Route::post('/logout', [AuthController::class, 'logout'])
-->middleware('auth')
-->name('logout');
+    ->middleware('auth')
+    ->name('logout');
 
 
 /*
 |--------------------------------------------------------------------------
-| DASHBOARD CLIENT
+| CLIENT AREA
 |--------------------------------------------------------------------------
 */
 
 Route::middleware(['auth','role:customer'])->group(function(){
 
+    /*
+    |---------------------------------------
+    | Dashboard
+    |---------------------------------------
+    */
+
     Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->name('dashboard');
-
-});
+        ->name('dashboard');
 
 
-/*
-|--------------------------------------------------------------------------
-| PEMESANAN CLIENT
-|--------------------------------------------------------------------------
-*/
+    /*
+    |---------------------------------------
+    | Pemesanan
+    |---------------------------------------
+    */
 
-Route::prefix('pemesanan')
-->middleware(['auth','role:customer'])
-->name('pemesanan.')
-->group(function(){
+    Route::prefix('pemesanan')->name('pemesanan.')->group(function(){
 
-    Route::get('/pengajuan', [PemesananController::class, 'pengajuan'])
-    ->name('pengajuan');
+        Route::get('/pengajuan', [PemesananController::class, 'pengajuan'])
+            ->name('pengajuan');
 
-    Route::post('/pengajuan', [PemesananController::class, 'store'])
-    ->name('store');
+        Route::post('/pengajuan', [PemesananController::class, 'store'])
+            ->name('store');
 
-    Route::get('/pilih-aroma', [PemesananController::class, 'pilihAroma'])
-    ->name('pilih-aroma');
+        Route::get('/pilih-aroma', [PemesananController::class, 'pilihAroma'])
+            ->name('pilih-aroma');
 
-    Route::get('/checkout', [PemesananController::class, 'checkout'])
-    ->name('checkout');
+        Route::get('/checkout', [PemesananController::class, 'checkout'])
+            ->name('checkout');
 
-    Route::post('/checkout/process', [PemesananController::class, 'processCheckout'])
-    ->name('checkout.process');
+        Route::post('/checkout/process', [PemesananController::class, 'processCheckout'])
+            ->name('checkout.process');
 
-});
+    });
 
 
-/*
-|--------------------------------------------------------------------------
-| TRACKING CLIENT
-|--------------------------------------------------------------------------
-*/
+    /*
+    |---------------------------------------
+    | Tracking
+    |---------------------------------------
+    */
 
-Route::prefix('tracking')
-->middleware(['auth','role:customer'])
-->name('tracking.')
-->group(function(){
+    Route::prefix('tracking')->name('tracking.')->group(function(){
 
-    Route::get('/', [TrackingController::class, 'index'])
-    ->name('index');
+        Route::get('/', [TrackingController::class, 'index'])
+            ->name('index');
 
-    Route::get('/{id}', [TrackingController::class, 'detail'])
-    ->name('detail');
+        Route::get('/{id}', [TrackingController::class, 'detail'])
+            ->name('detail');
 
-});
+    });
 
 
-/*
-|--------------------------------------------------------------------------
-| ACCOUNT CLIENT
-|--------------------------------------------------------------------------
-*/
+    /*
+    |---------------------------------------
+    | Account
+    |---------------------------------------
+    */
 
-Route::prefix('account')
-->middleware(['auth','role:customer'])
-->name('account.')
-->group(function(){
+    Route::prefix('account')->name('account.')->group(function(){
 
-    Route::get('/', [AccountController::class, 'settings'])
-    ->name('settings');
+        Route::get('/', [AccountController::class, 'settings'])
+            ->name('settings');
 
-    Route::put('/profile', [AccountController::class, 'updateProfile'])
-    ->name('update-profile');
+        Route::put('/profile', [AccountController::class, 'updateProfile'])
+            ->name('update-profile');
 
-    Route::put('/password', [AccountController::class, 'updatePassword'])
-    ->name('update-password');
+        Route::put('/password', [AccountController::class, 'updatePassword'])
+            ->name('update-password');
+
+    });
 
 });
 
@@ -148,15 +156,35 @@ Route::prefix('admin')
 ->group(function(){
 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])
-    ->name('dashboard');
+        ->name('dashboard');
 
     Route::get('/pengajuan', [AdminDashboardController::class, 'pengajuan'])
-    ->name('pengajuan');
+        ->name('pengajuan');
 
     Route::get('/produksi', [AdminDashboardController::class, 'produksi'])
-    ->name('produksi');
+        ->name('produksi');
 
     Route::get('/komponen-produksi', [AdminDashboardController::class, 'komponenproduksi'])
-    ->name('komponen.produksi');
+        ->name('komponen.produksi');
+    /*
+    CRUD AROMA
+    */
+
+    Route::post('/aroma', [KomponenProduksiController::class,'storeAroma'])->name('aroma.store');
+
+    Route::put('/aroma/{id}', [KomponenProduksiController::class,'updateAroma'])->name('aroma.update');
+
+    Route::delete('/aroma/{id}', [KomponenProduksiController::class,'deleteAroma'])->name('aroma.delete');
+
+
+    /*
+    CRUD KEMASAN
+    */
+
+    Route::post('/kemasan', [KomponenProduksiController::class,'storeKemasan'])->name('kemasan.store');
+
+    Route::put('/kemasan/{id}', [KomponenProduksiController::class,'updateKemasan'])->name('kemasan.update');
+
+    Route::delete('/kemasan/{id}', [KomponenProduksiController::class,'deleteKemasan'])->name('kemasan.delete');
 
 });

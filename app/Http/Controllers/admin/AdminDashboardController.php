@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Aroma;
+use App\Models\Kemasan;
 
 class AdminDashboardController extends Controller
 {
@@ -98,20 +100,13 @@ class AdminDashboardController extends Controller
     {
         $navItems = $this->getNavItems();
 
-        // Data Katalog Aroma (Bagian Atas)
-        $aromaCategories = [
-            ['id' => 'CAT-001', 'name' => 'Floral', 'color' => 'bg-pink-500', 'price' => 'Rp 45.000'],
-            ['id' => 'CAT-002', 'name' => 'Woody', 'color' => 'bg-orange-500', 'price' => 'Rp 55.000'],
-            ['id' => 'CAT-003', 'name' => 'Oriental', 'color' => 'bg-purple-500', 'price' => 'Rp 60.000'],
-            ['id' => 'CAT-004', 'name' => 'Fresh', 'color' => 'bg-cyan-500', 'price' => 'Rp 38.000'],
-        ];
+        $aromaCategories = Aroma::all();
+        $packagingItems = Kemasan::all();
 
-        // Data Katalog Kemasan (Bagian Bawah)
-        $packagingItems = [
-            ['id' => 'KMS-001', 'bottle' => 'Glass Square Premium', 'size' => '50 ml', 'box' => 'Cardboard Velvet', 'note' => 'Tutup Gold Magnetic', 'cost' => 'Rp 15.500'],
-            ['id' => 'KMS-002', 'bottle' => 'Cylinder Frosted', 'size' => '30 ml', 'box' => 'Softbox Doff', 'note' => 'Tutup Silver Spray', 'cost' => 'Rp 8.200'],
-        ];
-
-        return view('admin.komponenproduksi', compact('navItems', 'aromaCategories', 'packagingItems'));
+        return view('admin.komponenproduksi', compact(
+            'navItems',
+            'aromaCategories',
+            'packagingItems'
+        ));
     }
 }
