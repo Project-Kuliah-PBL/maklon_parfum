@@ -11,13 +11,6 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
-
-/*
-|--------------------------------------------------------------------------
 | HALAMAN PUBLIK
 |--------------------------------------------------------------------------
 */
@@ -31,106 +24,139 @@ Route::get('/kontak', [PageController::class, 'kontak'])->name('kontak');
 
 /*
 |--------------------------------------------------------------------------
-| AUTENTIKASI
+| AUTH (Hanya untuk Guest)
 |--------------------------------------------------------------------------
 */
 
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('guest')->group(function(){
 
-Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-
-/*
-|--------------------------------------------------------------------------
-| DASHBOARD USER
-|--------------------------------------------------------------------------
-*/
-
-Route::middleware(['auth'])->group(function () {
-
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
 
 });
 
 
 /*
 |--------------------------------------------------------------------------
-| PEMESANAN
+| LOGOUT
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/logout', [AuthController::class, 'logout'])
+->middleware('auth')
+->name('logout');
+
+
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD CLIENT
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth','role:customer'])->group(function(){
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| PEMESANAN CLIENT
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('pemesanan')
-->middleware(['auth'])
+->middleware(['auth','role:customer'])
 ->name('pemesanan.')
-->group(function () {
+->group(function(){
 
-    Route::get('/pengajuan', [PemesananController::class, 'pengajuan'])->name('pengajuan');
-    Route::post('/pengajuan', [PemesananController::class, 'store'])->name('store');
+    Route::get('/pengajuan', [PemesananController::class, 'pengajuan'])
+    ->name('pengajuan');
 
-    Route::get('/pilih-aroma', [PemesananController::class, 'pilihAroma'])->name('pilih-aroma');
+    Route::post('/pengajuan', [PemesananController::class, 'store'])
+    ->name('store');
 
-    Route::get('/checkout', [PemesananController::class, 'checkout'])->name('checkout');
-    Route::post('/checkout/process', [PemesananController::class, 'processCheckout'])->name('checkout.process');
+    Route::get('/pilih-aroma', [PemesananController::class, 'pilihAroma'])
+    ->name('pilih-aroma');
+
+    Route::get('/checkout', [PemesananController::class, 'checkout'])
+    ->name('checkout');
+
+    Route::post('/checkout/process', [PemesananController::class, 'processCheckout'])
+    ->name('checkout.process');
 
 });
 
 
 /*
 |--------------------------------------------------------------------------
-| ADMIN
+| TRACKING CLIENT
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')
-->middleware(['auth'])
-->name('admin.')
-->group(function () {
+Route::prefix('tracking')
+->middleware(['auth','role:customer'])
+->name('tracking.')
+->group(function(){
 
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [TrackingController::class, 'index'])
+    ->name('index');
 
-    Route::get('/pengajuan', [AdminDashboardController::class, 'pengajuan'])->name('pengajuan');
-
-    Route::get('/produksi', [AdminDashboardController::class, 'produksi'])->name('produksi');
-
-    Route::get('/komponen-produksi', [AdminDashboardController::class, 'komponenproduksi'])->name('komponen.produksi');
+    Route::get('/{id}', [TrackingController::class, 'detail'])
+    ->name('detail');
 
 });
 
 
 /*
 |--------------------------------------------------------------------------
-| ACCOUNT
+| ACCOUNT CLIENT
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('account')
-->middleware(['auth'])
+->middleware(['auth','role:customer'])
 ->name('account.')
-->group(function () {
+->group(function(){
 
-    Route::get('/', [AccountController::class, 'settings'])->name('settings');
+    Route::get('/', [AccountController::class, 'settings'])
+    ->name('settings');
 
-    Route::put('/profile', [AccountController::class, 'updateProfile'])->name('update-profile');
+    Route::put('/profile', [AccountController::class, 'updateProfile'])
+    ->name('update-profile');
 
-    Route::put('/password', [AccountController::class, 'updatePassword'])->name('update-password');
+    Route::put('/password', [AccountController::class, 'updatePassword'])
+    ->name('update-password');
 
 });
 
 
 /*
 |--------------------------------------------------------------------------
-| TRACKING
+| ADMIN PANEL
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('tracking')->name('tracking.')->group(function () {
+Route::prefix('admin')
+->middleware(['auth','role:admin'])
+->name('admin.')
+->group(function(){
 
-    Route::get('/', [TrackingController::class, 'index'])->name('index');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+    ->name('dashboard');
 
-    Route::get('/{id}', [TrackingController::class, 'detail'])->name('detail');
+    Route::get('/pengajuan', [AdminDashboardController::class, 'pengajuan'])
+    ->name('pengajuan');
+
+    Route::get('/produksi', [AdminDashboardController::class, 'produksi'])
+    ->name('produksi');
+
+    Route::get('/komponen-produksi', [AdminDashboardController::class, 'komponenproduksi'])
+    ->name('komponen.produksi');
 
 });
