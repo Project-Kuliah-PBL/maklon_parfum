@@ -109,58 +109,97 @@
                     </button>
                 </div>
 
-                @foreach ($submissions as $sub)
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500">{{ $sub['initial'] }}</div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800">{{ $sub['client'] }}</h4>
-                                    <p class="text-xs text-slate-400 uppercase tracking-wider">ID: {{ $sub['id'] }} • {{ $sub['time'] }}</p>
-                                </div>
-                            </div>
-                            <span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[10px] font-bold">MENUNGGU APPROVAL</span>
-                        </div>
+               @foreach ($submissions as $sub)
+<div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+    <div class="p-6">
 
-                        <div class="grid grid-cols-4 gap-4 p-4 bg-slate-50 rounded-2xl mb-6">
-                            <div>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Jenis</p>
-                                <p class="text-sm font-semibold text-slate-700">{{ $sub['type'] }}</p>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Aroma</p>
-                                <p class="text-sm font-semibold text-slate-700">{{ $sub['aroma'] }}</p>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Jumlah</p>
-                                <p class="text-sm font-semibold text-slate-700">{{ $sub['amount'] }}</p>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Target</p>
-                                <p class="text-sm font-semibold text-slate-700">{{ $sub['target'] }}</p>
-                            </div>
-                        </div>
+        <div class="flex justify-between items-start mb-6">
+            <div class="flex items-center gap-4">
 
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                               @if(isset($p['team_ready']) && $p['team_ready'])
-                                     <span class="text-emerald-600 font-medium">Ready</span>
-                                @else
-                                    <span class="text-slate-400 font-medium">Pending</span>
-                                    @endif
-                                
-                            </div>
-                            <div class="flex gap-3">
-                                <button class="px-6 py-2 border border-slate-200 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-colors">Tolak</button>
-                                <button class="px-6 py-2 brand-purple text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:opacity-90 transition-opacity">
-                                    <i data-lucide="check" class="w-4 h-4"></i> Setujui
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500">
+                    {{ strtoupper(substr($sub->user->name,0,2)) }}
                 </div>
-                @endforeach
+
+                <div>
+                    <h4 class="font-bold text-slate-800">
+                        {{ $sub->user->name }}
+                    </h4>
+
+                    <p class="text-xs text-slate-400 uppercase tracking-wider">
+                        ID: REQ-{{ $sub->id }} • {{ $sub->created_at->diffForHumans() }}
+                    </p>
+                </div>
+
+            </div>
+
+            <span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-lg text-[10px] font-bold">
+                MENUNGGU APPROVAL
+            </span>
+
+        </div>
+
+        <div class="grid grid-cols-4 gap-4 p-4 bg-slate-50 rounded-2xl mb-6">
+
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Jenis</p>
+                <p class="text-sm font-semibold text-slate-700">
+                    {{ $sub->jenis_parfum }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Aroma</p>
+                <p class="text-sm font-semibold text-slate-700">
+                    {{ $sub->aromas->pluck('nama_kategori')->implode(', ') }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Jumlah</p>
+                <p class="text-sm font-semibold text-slate-700">
+                    {{ number_format($sub->jumlah) }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Target</p>
+                <p class="text-sm font-semibold text-slate-700">
+                    {{ $sub->target_market }}
+                </p>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center">
+
+            <div class="flex items-center gap-2">
+
+                @if($sub->status == 'proses')
+                    <span class="text-emerald-600 font-medium">Ready</span>
+                @else
+                    <span class="text-slate-400 font-medium">Pending</span>
+                @endif
+
+            </div>
+
+            <div class="flex gap-3">
+
+                <button class="px-6 py-2 border border-slate-200 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-colors">
+                    Tolak
+                </button>
+
+                <button class="px-6 py-2 brand-purple text-white rounded-xl text-sm font-bold flex items-center gap-2 hover:opacity-90 transition-opacity">
+                    <i data-lucide="check" class="w-4 h-4"></i>
+                    Setujui
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+@endforeach
             </div>
 
             <div class="w-80 space-y-6">

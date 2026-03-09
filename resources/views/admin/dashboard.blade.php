@@ -105,26 +105,55 @@
                     <tbody class="divide-y divide-slate-50">
                         @foreach($activities as $act)
                         <tr class="text-sm text-slate-600 hover:bg-slate-50 transition-colors">
-                            <td class="px-6 py-4 font-medium">{{ $act['id'] }}</td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
-                                        {{ $act['initial'] }}
-                                    </div>
-                                    <span class="font-medium text-slate-800">{{ $act['client'] }}</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">{{ $act['type'] }}</td>
-                            <td class="px-6 py-4">
-                                <span class="px-3 py-1 rounded-lg text-[10px] font-bold {{ $act['class'] }}">
-                                    {{ $act['status'] }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <button class="text-slate-400 hover:text-brand-purple">
-                                    <i data-lucide="eye" class="w-5 h-5"></i>
-                                </button>
-                            </td>
+
+                        <td class="px-6 py-4 font-medium">
+                        MKL-{{ $act->id }}
+                        </td>
+
+                        <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+
+                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
+                        {{ substr($act->user->name,0,2) }}
+                        </div>
+
+                        <span class="font-medium text-slate-800">
+                        {{ $act->user->name }}
+                        </span>
+
+                        </div>
+                        </td>
+
+                        <td class="px-6 py-4">
+                        {{ $act->jenis_parfum }}
+                        </td>
+
+                        <td class="px-6 py-4">
+
+                        <span class="px-3 py-1 rounded-lg text-[10px] font-bold
+                        @if($act->status == 'pending')
+                        bg-orange-100 text-orange-600
+                        @elseif($act->status == 'proses')
+                        bg-blue-100 text-blue-600
+                        @elseif($act->status == 'selesai')
+                        bg-green-100 text-green-600
+                        @else
+                        bg-red-100 text-red-600
+                        @endif
+                        ">
+
+                        {{ strtoupper($act->status) }}
+
+                        </span>
+
+                        </td>
+
+                        <td class="px-6 py-4 text-right">
+                        <button class="text-slate-400 hover:text-brand-purple">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                        </td>
+
                         </tr>
                         @endforeach
                     </tbody>

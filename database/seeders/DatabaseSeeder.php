@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
     // =============================
     // MASTER HARGA PARFUM
     // =============================
-
+    
     HargaParfum::insert([
         ['jenis_parfum' => 'EDC', 'harga_per_ml' => 1200, 'created_at'=>now(), 'updated_at'=>now()],
         ['jenis_parfum' => 'EDT', 'harga_per_ml' => 2000, 'created_at'=>now(), 'updated_at'=>now()],
@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
     // =============================
     // MASTER DATA LAIN
     // =============================
-
+    
     $users = User::factory(20)->create();
     $aromas = Aroma::factory(5)->create();
     $notes = Note::factory(10)->create();

@@ -6,53 +6,84 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-use App\Models\Aroma;
-use App\Models\Kemasan;
-use App\Models\User;
-use App\Models\HargaParfum;
-use App\Models\Traking;
-use App\Models\Pembayaran;
-
 class Pengajuan extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id',
-        'harga_parfum_id',
-        'jenis_parfum',
-        'jumlah',
-        'target_market',
-        'catatan',
-        'status'
+    'user_id',
+    'harga_parfum_id',
+    'jenis_parfum',
+    'jumlah',
+    'target_market',
+    'catatan',
+    'status',
+    'total_harga',
+    'estimasi_selesai'
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION USER
+    |--------------------------------------------------------------------------
+    */
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION HARGA PARFUM
+    |--------------------------------------------------------------------------
+    */
+
     public function hargaParfum()
     {
         return $this->belongsTo(HargaParfum::class);
     }
 
-    public function trakings()
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION TRACKING PRODUKSI
+    |--------------------------------------------------------------------------
+    */
+
+    public function tracking()
     {
         return $this->hasMany(Traking::class);
     }
 
-    public function pembayarans()
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION PEMBAYARAN
+    |--------------------------------------------------------------------------
+    */
+
+    public function pembayaran()
     {
         return $this->hasMany(Pembayaran::class);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION AROMA (Many to Many)
+    |--------------------------------------------------------------------------
+    */
+
     public function aromas()
     {
         return $this->belongsToMany(Aroma::class, 'pengajuan_aromas')
                     ->withPivot('note_id')
                     ->withTimestamps();
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELATION KEMASAN (Many to Many)
+    |--------------------------------------------------------------------------
+    */
 
     public function kemasans()
     {
