@@ -19,7 +19,7 @@
         $totalSelesai = \App\Models\Pengajuan::where('status','selesai')->count();
         $totalPending = \App\Models\Pengajuan::where('status','pending')->count();
     @endphp
-    <div class="grid grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4">
             <div class="bg-blue-50 text-blue-600 p-3 rounded-xl"><i data-lucide="flask-conical" class="w-6 h-6"></i></div>
             <div>
@@ -60,7 +60,7 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full min-w-full">
                 <thead>
                     <tr class="bg-slate-50 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                         <th class="px-6 py-4 text-left">ID Proyek</th>
@@ -76,8 +76,8 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($batches as $batch)
                     <tr class="text-sm text-slate-600 hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 font-mono text-xs text-purple-600 font-bold">{{ $batch['id'] }}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 font-mono text-xs text-purple-600 font-bold whitespace-normal">{{ $batch['id'] }}</td>
+                        <td class="px-6 py-4 whitespace-normal">
                             <div class="flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-xs font-bold text-purple-600">
                                     {{ strtoupper(substr($batch['client'], 0, 2)) }}
@@ -85,8 +85,8 @@
                                 <span class="font-medium text-slate-800">{{ $batch['client'] }}</span>
                             </div>
                         </td>
-                        <td class="px-6 py-4 font-medium text-slate-700">{{ $batch['product'] }}</td>
-                        <td class="px-6 py-4 text-slate-600">{{ number_format($batch['jumlah']) }} unit</td>
+                        <td class="px-6 py-4 font-medium text-slate-700 whitespace-normal">{{ $batch['product'] }}</td>
+                        <td class="px-6 py-4 text-slate-600 whitespace-normal">{{ number_format($batch['jumlah']) }} unit</td>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <div class="flex-1 h-2 bg-slate-100 rounded-full min-w-[80px]">

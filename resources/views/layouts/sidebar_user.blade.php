@@ -99,7 +99,7 @@
             z-index: 50;
         }
 
-        .topbar-hamburger { cursor: pointer; color: var(--text-secondary); }
+        .topbar-hamburger { cursor: pointer; color: var(--text-secondary); display: none; }
         .topbar-hamburger svg { width: 22px; height: 22px; }
 
         .topbar-user {
@@ -341,6 +341,86 @@
 
         .alert-success { background: var(--status-green-bg); color: var(--status-green); }
         .alert-error { background: #fee2e2; color: #b91c1c; }
+
+        /* ── RESPONSIVE DESIGN ── */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-wrapper {
+                margin-left: 0;
+            }
+            .topbar {
+                padding: 0 16px;
+            }
+            .page-content {
+                padding: 16px;
+            }
+            .page-title {
+                font-size: 22px;
+            }
+            .stat-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .stat-card {
+                padding: 20px;
+            }
+            .stat-value {
+                font-size: 28px;
+            }
+            .section-card {
+                padding: 20px;
+            }
+            .project-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .project-id-row {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .btn-detail {
+                align-self: flex-end;
+            }
+            .project-meta {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .history-table th,
+            .history-table td {
+                padding: 8px 10px;
+                font-size: 12px;
+            }
+            .topbar-user-info {
+                display: none;
+            }
+            .topbar-hamburger {
+                display: block;
+            }
+        }
+
+        /* Overlay for mobile sidebar */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+        }
+        @media (max-width: 768px) {
+            .sidebar-overlay.open {
+                display: block;
+            }
+        }
     </style>
     @stack('styles')
 </head>
@@ -394,6 +474,9 @@
     </nav>
 </aside>
 
+{{-- SIDEBAR OVERLAY --}}
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 {{-- MAIN --}}
 <div class="main-wrapper">
     <header class="topbar">
@@ -420,6 +503,26 @@
         @yield('content')
     </main>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.querySelector('.topbar-hamburger');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (hamburger && sidebar && overlay) {
+            hamburger.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('open');
+            });
+
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+            });
+        }
+    });
+</script>
 
 @stack('scripts')
 </body>
