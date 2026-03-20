@@ -51,17 +51,17 @@
   <div class="w-full max-w-[880px] h-[90vh] max-h-[480px] lg:max-h-[460px] bg-white rounded-3xl overflow-hidden shadow-premium flex flex-col lg:flex-row">
     
     <!-- LEFT PANEL: visual -->
-    <section class="relative w-full h-[30%] lg:w-1/2 lg:h-full bg-perfume overflow-hidden">
+    <section class="hidden lg:flex relative w-full h-[25%] lg:w-1/2 lg:h-full bg-perfume overflow-hidden">
       <!-- Overlay gradient soft -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+      <div class="hidden lg:block absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
       
       <!-- Glass card di TENGAH BAWAH -->
-      <div class="absolute left-1/2 -translate-x-1/2 bottom-5 z-10 w-full flex justify-center">
+      <div class="absolute left-1/2 -translate-x-1/2 bottom-3 lg:bottom-5 z-10 w-full flex justify-center">
         <div class="glass-custom rounded-xl px-4 py-3 lg:px-5 lg:py-3.5 max-w-[260px] lg:max-w-[280px]">
-          <h1 class="font-sans text-white text-xs lg:text-base leading-tight font-semibold text-center">
+          <h1 class="font-sans text-white text-sm lg:text-base leading-tight font-semibold text-center">
             Wujudkan Visi Brand Parfum Anda Bersama Kami
           </h1>
-          <p class="text-white/80 text-[0.6rem] lg:text-[0.7rem] leading-relaxed font-light text-center mt-1">
+          <p class="text-white/80 text-[0.7rem] lg:text-[0.7rem] leading-relaxed font-light text-center mt-1">
             Partner manufaktur parfum terpercaya dengan standar kualitas premium untuk membangun identitas aroma eksklusif Anda.
           </p>
         </div>
@@ -69,7 +69,7 @@
     </section>
 
     <!-- RIGHT PANEL: login form -->
-    <section class="w-full h-[70%] lg:w-1/2 lg:h-full flex flex-col justify-center items-center p-3 lg:p- overflow-y-auto no-scrollbar">
+    <section class="w-full h-[75%] lg:w-1/2 lg:h-full flex flex-col justify-center items-center p-4 lg:p-6 overflow-y-auto no-scrollbar">
       <!-- Container form - beri padding kiri 0 -->
        <div class="mb-2 flex items-center gap-3 justify-start ml-0 pl-0">
           <!-- Logo -->
