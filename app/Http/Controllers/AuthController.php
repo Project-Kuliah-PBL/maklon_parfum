@@ -9,20 +9,27 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-
     /**
-     * Menampilkan halaman login
+     * Tampilkan halaman login.
+     * Jika sudah login, redirect ke dashboard sesuai role.
      */
     public function showLoginForm()
     {
+        if (Auth::check()) {
+            return $this->redirectByRole();
+        }
         return view('auth.login');
     }
 
     /**
-     * Menampilkan halaman register
+     * Tampilkan halaman register.
+     * Jika sudah login, redirect ke dashboard.
      */
     public function showRegisterForm()
     {
+        if (Auth::check()) {
+            return $this->redirectByRole();
+        }
         return view('auth.halaman_register');
     }
 
@@ -32,68 +39,58 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'email'    => 'required|email',
+            'password' => 'required',
         ]);
 
-        $credentials = $request->only('email','password');
-
-        if(Auth::attempt($credentials)){
-
+        if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
-
-            $user = Auth::user();
-
-            // redirect berdasarkan role
-            if($user->role === 'admin'){
-                return redirect()->route('admin.dashboard');
-            }
-
-            if($user->role === 'customer'){
-                return redirect()->route('dashboard');
-            }
+            return $this->redirectByRole();
         }
 
         return back()->withErrors([
-            'email' => 'Email atau password salah'
+            'email' => 'Email atau password salah',
         ])->withInput();
     }
 
-public function register(Request $request)
-{
-    $request->validate([
-        'name' => 'required',
-        'username' => 'required|unique:users',
-        'email' => 'required|email|unique:users',
-        'nama_brand' => 'required',
-        'no_telp' => 'required',
-        'password' => 'required|min:6|confirmed'
-    ], [
-        'name.required' => 'Nama pemilik wajib diisi.',
-        'username.required' => 'Username tidak boleh kosong.',
-        'username.unique' => 'Username ini sudah digunakan.',
-        'email.required' => 'Alamat email wajib diisi.',
-        'email.email' => 'Format email tidak valid.',
-        'email.unique' => 'Email ini sudah terdaftar.',
-        'nama_brand.required' => 'Nama brand wajib diisi.',
-        'no_telp.required' => 'Nomor telepon wajib diisi.',
-        'password.required' => 'Password wajib diisi.',
-        'password.min' => 'Password minimal harus 6 karakter.',
-        'password.confirmed' => 'Konfirmasi password tidak cocok.',
-    ]);
+    /**
+     * Proses register
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name'       => 'required',
+            'username'   => 'required|unique:users',
+            'email'      => 'required|email|unique:users',
+            'nama_brand' => 'required',
+            'no_telp'    => 'required',
+            'password'   => 'required|min:6|confirmed',
+        ], [
+            'name.required'       => 'Nama pemilik wajib diisi.',
+            'username.required'   => 'Username tidak boleh kosong.',
+            'username.unique'     => 'Username ini sudah digunakan.',
+            'email.required'      => 'Alamat email wajib diisi.',
+            'email.email'         => 'Format email tidak valid.',
+            'email.unique'        => 'Email ini sudah terdaftar.',
+            'nama_brand.required' => 'Nama brand wajib diisi.',
+            'no_telp.required'    => 'Nomor telepon wajib diisi.',
+            'password.required'   => 'Password wajib diisi.',
+            'password.min'        => 'Password minimal harus 6 karakter.',
+            'password.confirmed'  => 'Konfirmasi password tidak cocok.',
+        ]);
 
-    User::create([
-        'name' => $request->name,
-        'username' => $request->username,
-        'email' => $request->email,
-        'nama_brand' => $request->nama_brand,
-        'no_telp' => $request->no_telp,
-        'role' => 'customer',
-        'password' => Hash::make($request->password)
-    ]);
+        User::create([
+            'name'       => $request->name,
+            'username'   => $request->username,
+            'email'      => $request->email,
+            'nama_brand' => $request->nama_brand,
+            'no_telp'    => $request->no_telp,
+            'role'       => 'customer',
+            'password'   => Hash::make($request->password),
+        ]);
 
-    return redirect()->route('login')->with('success', 'Register berhasil');
-}
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
+    }
 
     /**
      * Proses logout
@@ -101,10 +98,22 @@ public function register(Request $request)
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect()->route('home');
+    }
+
+    /**
+     * Redirect berdasarkan role user yang sedang login
+     */
+    private function redirectByRole()
+    {
+        $role = Auth::user()->role;
+
+        if ($role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('dashboard');
     }
 }
