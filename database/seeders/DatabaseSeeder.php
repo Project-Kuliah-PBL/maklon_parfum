@@ -50,34 +50,51 @@ class DatabaseSeeder extends Seeder
     // }
     public function run(): void
 {
-    // =============================
-    // MASTER HARGA PARFUM
-    // =============================
-    
-    HargaParfum::insert([
-        ['jenis_parfum' => 'EDC', 'harga_per_ml' => 1200, 'created_at'=>now(), 'updated_at'=>now()],
-        ['jenis_parfum' => 'EDT', 'harga_per_ml' => 2000, 'created_at'=>now(), 'updated_at'=>now()],
-        ['jenis_parfum' => 'EDP', 'harga_per_ml' => 3500, 'created_at'=>now(), 'updated_at'=>now()],
-        ['jenis_parfum' => 'Extrait', 'harga_per_ml' => 5000, 'created_at'=>now(), 'updated_at'=>now()],
-        ['jenis_parfum' => 'Parfum', 'harga_per_ml' => 6500, 'created_at'=>now(), 'updated_at'=>now()],
-    ]);
+
+    $dataHarga = [
+        ['jenis_parfum' => 'EDC', 'harga_per_ml' => 1200],
+        ['jenis_parfum' => 'EDT', 'harga_per_ml' => 2000],
+        ['jenis_parfum' => 'EDP', 'harga_per_ml' => 3500],
+        ['jenis_parfum' => 'Extrait', 'harga_per_ml' => 5000],
+        ['jenis_parfum' => 'Parfum', 'harga_per_ml' => 6500],
+    ];
+
+    foreach ($dataHarga as $item) {
+        HargaParfum::updateOrCreate(
+            ['jenis_parfum' => $item['jenis_parfum']],
+            ['harga_per_ml' => $item['harga_per_ml']]
+        );
+    }
 
     $hargaParfums = HargaParfum::all();
 
     // =============================
-    // MASTER DATA LAIN
+    // MASTER DATA LAIN (PAKAI FACTORY)
     // =============================
-    
+
     $users = User::factory(20)->create();
     $aromas = Aroma::factory(5)->create();
     $notes = Note::factory(10)->create();
     $kemasans = Kemasan::factory(5)->create();
 
     // =============================
-    // BUAT 100 PENGAJUAN
+    // TARGET JUMLAH DATA PENGAJUAN
     // =============================
 
-    for ($i = 0; $i < 100; $i++) {
+    $target = 200; // 🔥 ubah sesuai kebutuhan
+    $sekarang = Pengajuan::count();
+
+    if ($sekarang >= $target) {
+        return; // sudah cukup, tidak tambah
+    }
+
+    $kurang = $target - $sekarang;
+
+    // =============================
+    // LOOP TAMBAH DATA
+    // =============================
+
+    for ($i = 0; $i < $kurang; $i++) {
 
         $user = $users->random();
         $harga = $hargaParfums->random();
@@ -97,18 +114,12 @@ class DatabaseSeeder extends Seeder
             'status' => fake()->randomElement(['pending','proses','selesai','ditolak']),
         ]);
 
-        // =============================
         // RELASI AROMA + NOTE
-        // =============================
-
         $pengajuan->aromas()->attach($aroma->id, [
             'note_id' => $note->id
         ]);
 
-        // =============================
         // RELASI KEMASAN
-        // =============================
-
         $pengajuan->kemasans()->attach(
             $kemasan->id,
             [
@@ -117,35 +128,23 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // =============================
         // HITUNG TOTAL
-        // =============================
+        $total =
+            ($harga->harga_per_ml * $jumlah) +
+            $aroma->biaya_kategori +
+            $note->biaya_note +
+            $kemasan->biaya_kemasan;
 
-        $hargaParfumTotal = $harga->harga_per_ml * $jumlah;
-        $biayaAroma = $aroma->biaya_kategori;
-        $biayaNote = $note->biaya_note;
-        $biayaKemasan = $kemasan->biaya_kemasan;
-
-        $total = $hargaParfumTotal + $biayaAroma + $biayaNote + $biayaKemasan;
-
-        // =============================
         // PEMBAYARAN
-        // =============================
-
-        $statusBayar = fake()->randomElement(['unpaid','paid','failed']);
-
         Pembayaran::create([
             'pengajuan_id' => $pengajuan->id,
             'metode_pembayaran' => fake()->randomElement(['Transfer BCA','Transfer Mandiri','QRIS','COD']),
             'total' => $total,
             'tanggal_pembayaran' => now(),
-            'status_bayar' => $statusBayar,
+            'status_bayar' => fake()->randomElement(['unpaid','paid','failed']),
         ]);
 
-        // =============================
         // TRACKING
-        // =============================
-
         Traking::create([
             'pengajuan_id' => $pengajuan->id,
             'tahapan' => 'Produksi',

@@ -50,7 +50,7 @@ class AuthController extends Controller
             }
 
             if($user->role === 'customer'){
-                return redirect()->route('user.dashboard');
+                return redirect()->route('user.dashboard_user');
             }
         }
 

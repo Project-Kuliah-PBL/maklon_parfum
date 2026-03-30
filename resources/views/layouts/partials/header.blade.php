@@ -27,7 +27,7 @@
             </a>
             
             <!-- Tombol Wujudkan Brand Impian Segera -->
-            <a href="{{ route('login') }}" 
+            <a href="{{ route('register') }}" 
                class="bg-[#523678] hover:bg-[#523678]/90 text-white px-3 md:px-4 py-1 md:py-1.5 rounded-lg text-[9px] md:text-[10px] lg:text-xs font-bold transition-all shadow-md shadow-[#523678]/20 hover:scale-105 active:scale-95 whitespace-nowrap inline-flex items-center gap-1">
                 Wujudkan Brand Impian Segera
             </a>

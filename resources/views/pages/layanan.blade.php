@@ -53,62 +53,7 @@
             </div>
         </div>
 
-        <!-- Grid Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Card 2: Private Label -->
-            <div class="service-card group bg-background-light dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all overflow-hidden">
-                <div class="flex flex-col sm:flex-row h-full">
-                    <div class="sm:w-2/5 overflow-hidden h-48 sm:h-auto">
-                        <img alt="Private Label Perfume" 
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLsiIVTv-OlLb3WMwhyg3SSCFWwfYiDrzu-q1TUR6ZJt51djQ8fpum2MOGpVamwxnfQLqBejVLAnZDei5Mx3HVKQqPt9mFxuTxLVhN4y2rni1GyvgQdqtQubIGQjGvFaRCB_ER7Ff8ZzUziTcQg9XBoGWMWhnVvuVGIMkJRT58f9xeHo9plLMI5P9b0L7_qroDz53jYgfx-_jni9C6Zob3PgceGDHrUuhFsCFTJ8WW-JrsA2W071GP8JlXvJt44s9-NybOnI1vGWA"/>
-                    </div>
-                    <div class="sm:w-3/5 p-8 flex flex-col justify-between">
-                        <div>
-                            <div class="size-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center mb-4">
-                                <span class="material-symbols-outlined text-xl">label</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Private Label (Siap Pakai)</h3>
-                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
-                                Pilih koleksi aroma premium kami yang telah teruji dan siap dipasarkan dengan brand Anda.
-                            </p>
-                        </div>
-                        <a href="{{ route('detail.layanan', 'private-label') }}" class="w-full inline-flex items-center justify-center px-6 py-3 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors gap-2">
-    Lihat Detail
-    <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</a>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: Refill & Reformulasi -->
-            <div class="service-card group bg-background-light dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all overflow-hidden">
-                <div class="flex flex-col sm:flex-row h-full">
-                    <div class="sm:w-2/5 overflow-hidden h-48 sm:h-auto">
-                        <img alt="Refill and Reformulation" 
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS5afJhRXcDYQStQk2JxxVuaWdgVOLCMj45B485EGmVsAEfeBlbKwCPJxnY5B1OnNiSKywDtYjRaBKTa3r2wzeY_YPoZWK2aeWRQW0YBkWUJYGd9dasOEsss0f1tm2fN5jxjQ2Kr0tpn9BFg64MI8Bg_ROGGjbaRIlMyb6UTGYCpt6jgMO_olN9CUEl4j--xanXUTaEewrWKFTc1zID3f2kyix7gVyIsfc0xvkW8Pg6y6wRH3xHv2TtjFSxC33795qVzIIp_OxmMo"/>
-                    </div>
-                    <div class="sm:w-3/5 p-8 flex flex-col justify-between">
-                        <div>
-                            <div class="size-10 bg-primary/20 text-primary rounded-lg flex items-center justify-center mb-4">
-                                <span class="material-symbols-outlined text-xl">refresh</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Refill &amp; Reformulasi</h3>
-                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
-                                Sempurnakan formula lama Anda atau ciptakan versi refill berkualitas tinggi standar Eropa.
-                            </p>
-                        </div>
-                        <a href="{{ route('detail.layanan', 'refill') }}" class="w-full inline-flex items-center justify-center px-6 py-3 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary/90 transition-colors gap-2">
-    Lihat Detail
-    <span class="material-symbols-outlined text-sm">arrow_forward</span>
-</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        
 </section>
 
 <!-- CTA Section with WhatsApp Button - MODIFIED BUTTONS -->

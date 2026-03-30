@@ -37,19 +37,19 @@ class RiwayatPesananController extends Controller
         // Query dasar dengan relasi
         $query = Pengajuan::with(['user', 'hargaParfum', 'pembayarans']);
 
-        // Apply search jika ada - menggunakan when()
+       
         $query->when($search, function($q) use ($search) {
             return $q->whereHas('user', function($userQuery) use ($search) {
                 $userQuery->where('name', 'LIKE', "%{$search}%");
             });
         });
 
-        // Apply status filter jika ada - menggunakan when()
+      
         $query->when($status, function($q) use ($status) {
             return $q->where('status', $status);
         });
 
-        // Ambil data dengan pagination, pertahankan parameter search dan filter
+      
         $orders = $query->orderBy('created_at', 'desc')
                     ->paginate(10)
                     ->withQueryString();
@@ -112,10 +112,9 @@ class RiwayatPesananController extends Controller
         // TOTAL HARGA diambil dari jumlah semua pembayaran (kolom total) di tabel pembayarans
         $totalPembayaran = $order->pembayarans->sum('total') ?? 0;
         
-        // Karena tidak ada kolom total_harga di tabel pengajuans,
-        // kita asumsikan total harga pesanan adalah jumlah dari semua pembayaran
+       
         $totalHarga = $totalPembayaran;
-        $sisaPembayaran = 0; // Tidak ada sisa karena totalHarga = totalPembayaran
+        $sisaPembayaran = 0; 
 
         // Tentukan status pembayaran berdasarkan jumlah pembayaran
         if ($totalPembayaran == 0) {
