@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('estimasi_selesai')
             ->after('total_harga')
             ->nullable();
+            
 
         });
     }

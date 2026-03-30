@@ -19,7 +19,8 @@ class Pengajuan extends Model
     'catatan',
     'status',
     'total_harga',
-    'estimasi_selesai'
+    'estimasi_selesai',
+    'progress'
     ];
 
     /*

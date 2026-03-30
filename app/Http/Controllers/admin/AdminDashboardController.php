@@ -143,86 +143,137 @@ class AdminDashboardController extends Controller
      | PRODUKSI — list
      * ------------------------------------------------------------- */
 
-    public function produksi(Request $request)
-    {
-        $navItems = $this->getNavItems();
+public function produksi(Request $request)
+{
+    $navItems = $this->getNavItems();
 
-        $query = Pengajuan::with(['user', 'tracking'])
-            ->where('status', 'proses');
+    $query = Pengajuan::with(['user', 'tracking'])
+        ->whereIn('status', ['proses', 'selesai']); // Include yang selesai juga untuk riwayat
 
-        if ($request->filled('search')) {
-            $keyword = $request->search;
-            $query->whereHas('user', fn($q) => $q->where('name', 'like', "%$keyword%"))
-                  ->orWhere('jenis_parfum', 'like', "%$keyword%");
+    if ($request->filled('search')) {
+        $keyword = $request->search;
+        $query->whereHas('user', fn($q) => $q->where('name', 'like', "%$keyword%"))
+              ->orWhere('jenis_parfum', 'like', "%$keyword%");
+    }
+
+    // Urutkan berdasarkan ID (descending = yang terbaru di atas)
+    $batches = $query->orderBy('id', 'asc')->get()->map(function ($p) {
+        // Gunakan progress dari database jika ada, jika tidak hitung dari tracking
+        $progress = $p->progress ?? 0;
+        
+        // Jika progress 0, hitung dari tracking untuk kompatibilitas mundur
+        if ($progress == 0 && $p->tracking->count() > 0) {
+            $totalTahap = $p->tracking->count();
+            $doneTahap = $p->tracking->where('status', 'done')->count();
+            $progress = $totalTahap > 0 ? round(($doneTahap / $totalTahap) * 100) : 0;
         }
 
-        $batches = $query->get()->map(function ($p) {
-            // Hitung progress dari tracking
-            $tracking    = $p->tracking;
-            $totalTahap  = $tracking->count();
-            $doneTahap   = $tracking->where('status', 'done')->count();
-            $progress    = $totalTahap > 0 ? round(($doneTahap / $totalTahap) * 100) : 0;
+        // Tahap saat ini (yang sedang progress)
+        $currentTahap = $p->tracking->where('status', 'progress')->first();
+        
+        // Jika tidak ada yang progress dan belum selesai, ambil tahap terakhir yang belum done
+        if (!$currentTahap && $p->status == 'proses') {
+            $currentTahap = $p->tracking->where('status', '!=', 'done')->first();
+        }
 
-            // Tahap saat ini (yang sedang progress)
-            $currentTahap = $tracking->where('status', 'progress')->first();
+        return [
+            'id'          => 'MKL-' . str_pad($p->id, 5, '0', STR_PAD_LEFT),
+            'pengajuan_id'=> $p->id,
+            'client'      => $p->user->name,
+            'product'     => $p->jenis_parfum,
+            'jumlah'      => $p->jumlah,
+            'progress'    => $progress,
+            'status'      => $currentTahap ? $currentTahap->tahapan : ($progress >= 100 ? 'Selesai' : 'Menunggu'),
+            'eta'         => $p->estimasi_selesai ? \Carbon\Carbon::parse($p->estimasi_selesai)->format('d M Y') : '-',
+            'tracking'    => $p->tracking,
+        ];
+    });
 
-            return [
-                'id'          => 'MKL-' . str_pad($p->id, 5, '0', STR_PAD_LEFT),
-                'pengajuan_id'=> $p->id,
-                'client'      => $p->user->name,
-                'product'     => $p->jenis_parfum,
-                'jumlah'      => $p->jumlah,
-                'progress'    => $progress,
-                'status'      => $currentTahap ? $currentTahap->tahapan : ($progress >= 100 ? 'Selesai QC' : 'Persiapan'),
-                'eta'         => $p->estimasi_selesai ? \Carbon\Carbon::parse($p->estimasi_selesai)->format('d M Y') : '-',
-                'stage_color' => 'bg-blue-100 text-blue-600',
-                'tracking'    => $tracking,
-            ];
-        });
-
-        return view('admin.produksi', compact('navItems', 'batches'));
-    }
+    return view('admin.produksi', compact('navItems', 'batches'));
+}
 
     /* ---------------------------------------------------------------
      | PRODUKSI — Update status/progress
      * ------------------------------------------------------------- */
 
-    public function updateProduksi(Request $request, $id)
-    {
-        $request->validate([
-            'tahapan'        => 'required|string',
-            'progress'       => 'required|integer|min:0|max:100',
-            'estimasi_selesai'=> 'nullable|date',
-            'catatan'        => 'nullable|string|max:500',
+   public function updateProduksi(Request $request, $id)
+{
+    $request->validate([
+        'tahapan'         => 'required|string',
+        'progress'        => 'required|integer|min:0|max:100',
+        'estimasi_selesai'=> 'nullable|date',
+        'catatan'         => 'nullable|string|max:500',
+    ]);
+
+    $pengajuan = Pengajuan::findOrFail($id);
+
+    // 1. Update progress di tabel pengajuan
+    $pengajuan->update([
+        'progress' => $request->progress
+    ]);
+
+    // 2. Update estimasi jika diisi
+    if ($request->filled('estimasi_selesai')) {
+        $pengajuan->update(['estimasi_selesai' => $request->estimasi_selesai]);
+    }
+
+    // 3. Update atau buat tracking untuk tahap saat ini
+    $tracking = $pengajuan->tracking()->where('tahapan', $request->tahapan)->first();
+    
+    if ($tracking) {
+        // Update tracking yang sudah ada
+        $tracking->update([
+            'status'  => 'done', // Tandai tahap ini selesai
+            'catatan' => $request->catatan,
+            'tanggal' => now(),
         ]);
-
-        $pengajuan = Pengajuan::findOrFail($id);
-
-        // Update estimasi jika diisi
-        if ($request->filled('estimasi_selesai')) {
-            $pengajuan->update(['estimasi_selesai' => $request->estimasi_selesai]);
-        }
-
-        // Update status tracking: tandai tahap aktif → done, buat/update tahap baru
-        $tracking = $pengajuan->tracking()->where('tahapan', $request->tahapan)->first();
-        if ($tracking) {
-            $tracking->update([
-                'status'  => $request->progress >= 100 ? 'done' : 'progress',
-                'catatan' => $request->catatan,
-                'tanggal' => now(),
-            ]);
-        }
-
-        // Jika progress 100 dan semua tahap selesai, tandai pengajuan selesai
-        if ($request->progress >= 100) {
-            $allDone = $pengajuan->tracking()->where('status', '!=', 'done')->doesntExist();
-            if ($allDone) {
-                $pengajuan->update(['status' => 'selesai']);
+        
+        // Cek apakah ada tahap selanjutnya yang belum dibuat
+        $tahapanUrutan = ['Persiapan Bahan', 'Mixing', 'Filling', 'Packaging', 'QC'];
+        $currentIndex = array_search($request->tahapan, $tahapanUrutan);
+        
+        if ($currentIndex !== false && $currentIndex < count($tahapanUrutan) - 1) {
+            $nextTahap = $tahapanUrutan[$currentIndex + 1];
+            
+            // Cek apakah tahap selanjutnya sudah ada
+            $nextTracking = $pengajuan->tracking()->where('tahapan', $nextTahap)->first();
+            
+            if (!$nextTracking && $request->progress < 100) {
+                // Buat tracking untuk tahap selanjutnya dengan status progress
+                Traking::create([
+                    'pengajuan_id' => $pengajuan->id,
+                    'tahapan'      => $nextTahap,
+                    'status'       => 'progress',
+                    'tanggal'      => now(),
+                    'catatan'      => '',
+                ]);
             }
         }
-
-        return back()->with('success', "Progress produksi " . 'MKL-' . str_pad($id, 5, '0', STR_PAD_LEFT) . " berhasil diperbarui.");
+    } else {
+        // Jika tracking belum ada, buat baru
+        Traking::create([
+            'pengajuan_id' => $pengajuan->id,
+            'tahapan'      => $request->tahapan,
+            'status'       => $request->progress >= 100 ? 'done' : 'progress',
+            'tanggal'      => now(),
+            'catatan'      => $request->catatan,
+        ]);
     }
+
+    // 4. Jika progress 100%, tandai semua tracking sebagai done
+    if ($request->progress >= 100) {
+        // Update semua tracking yang belum done menjadi done
+        $pengajuan->tracking()->where('status', '!=', 'done')->update([
+            'status' => 'done',
+            'tanggal' => now()
+        ]);
+        
+        // Tandai pengajuan selesai
+        $pengajuan->update(['status' => 'selesai']);
+    }
+
+    return back()->with('success', "Progress produksi " . 'MKL-' . str_pad($id, 5, '0', STR_PAD_LEFT) . " berhasil diperbarui.");
+}
 
     /* ---------------------------------------------------------------
      | KOMPONEN PRODUKSI
