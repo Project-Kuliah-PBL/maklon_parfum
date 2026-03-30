@@ -22,6 +22,9 @@
   <style>
     /* Ukuran dasar diperkecil lagi agar lebih padat */
     html { font-size: 11px; } 
+    @media (max-width: 1023px) {
+      html { font-size: 14px; }
+    }
     .glass-box {
         background-color: rgba(53, 26, 92, 0.85); 
         backdrop-filter: blur(8px);
@@ -42,6 +45,12 @@
       font-size: 0.9rem;
       color: #523678;
     }
+    @media (max-width: 1023px) {
+      .input-field {
+        padding: 0.5rem 0.8rem;
+        font-size: 1rem;
+      }
+    }
     .no-scrollbar::-webkit-scrollbar { display: none; }
   </style>
 </head>
@@ -61,42 +70,42 @@
         <p class="text-[0.75rem] text-gray-500">Apakah anda sudah punya akun? <a href="{{ route('login') }}" class="text-blue-600 font-bold hover:underline">Log In</a></p>
       </div>
 
-      <form action="{{ route('register') }}" method="POST" class="space-y-1.5"> @csrf
+      <form action="{{ route('register') }}" method="POST" class="space-y-1.5 lg:space-y-2"> @csrf
         
         <div>
-            <label class="block text-[0.7rem] font-semibold text-gray-700 mb-0.5">Nama Pemilik</label>
+            <label class="block text-[0.7rem] lg:text-sm font-semibold text-gray-700 mb-0.5">Nama Pemilik</label>
             <input type="text" name="name" value="{{ old('name') }}" placeholder="Nama Lengkap" class="input-field @error('name') border-red-500 @enderror">
-            @error('name') <p class="text-[9px] text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
+            @error('name') <p class="text-[9px] lg:text-xs text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label class="block text-[0.7rem] font-semibold text-gray-700 mb-0.5">Username</label>
+            <label class="block text-[0.7rem] lg:text-sm font-semibold text-gray-700 mb-0.5">Username</label>
             <input type="text" name="username" value="{{ old('username') }}" placeholder="Username" class="input-field @error('username') border-red-500 @enderror">
-            @error('username') <p class="text-[9px] text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
+            @error('username') <p class="text-[9px] lg:text-xs text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label class="block text-[0.7rem] font-semibold text-gray-700 mb-0.5">Nama Brand</label>
+            <label class="block text-[0.7rem] lg:text-sm font-semibold text-gray-700 mb-0.5">Nama Brand</label>
             <input type="text" name="nama_brand" value="{{ old('nama_brand') }}" placeholder="Nama Brand" class="input-field @error('nama_brand') border-red-500 @enderror">
-            @error('nama_brand') <p class="text-[9px] text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
+            @error('nama_brand') <p class="text-[9px] lg:text-xs text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label class="block text-[0.7rem] font-semibold text-gray-700 mb-0.5">Email</label>
+            <label class="block text-[0.7rem] lg:text-sm font-semibold text-gray-700 mb-0.5">Email</label>
             <input type="email" name="email" value="{{ old('email') }}" placeholder="Email" class="input-field @error('email') border-red-500 @enderror">
-            @error('email') <p class="text-[9px] text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
+            @error('email') <p class="text-[9px] lg:text-xs text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label class="block text-[0.7rem] font-semibold text-gray-700 mb-0.5">No Telepon</label>
+            <label class="block text-[0.7rem] lg:text-sm font-semibold text-gray-700 mb-0.5">No Telepon</label>
             <input type="text" name="no_telp" value="{{ old('no_telp') }}" placeholder="No Telepon" class="input-field @error('no_telp') border-red-500 @enderror">
-            @error('no_telp') <p class="text-[9px] text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
+            @error('no_telp') <p class="text-[9px] lg:text-xs text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
         </div>
 
         <div>
-            <label class="block text-[0.7rem] font-semibold text-gray-700 mb-0.5">Password</label>
+            <label class="block text-[0.7rem] lg:text-sm font-semibold text-gray-700 mb-0.5">Password</label>
             <input type="password" name="password" placeholder="Password" class="input-field @error('password') border-red-500 @enderror">
-            @error('password') <p class="text-[9px] text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
+            @error('password') <p class="text-[9px] lg:text-xs text-red-500 mt-0.5 italic leading-none">* {{ $message }}</p> @enderror
         </div>
 
         <div>
@@ -120,7 +129,7 @@
         </button>
       </form>
 
-      <p class="text-[0.6rem] text-gray-400 italic mt-4 text-center leading-tight">
+      <p class="text-[0.6rem] lg:text-sm text-gray-400 italic mt-4 text-center leading-tight">
         Dengan mendaftar, Anda menyetujui <span class="underline">Ketentuan Layanan</span> dan <span class="underline">Kebijakan Privasi</span> kami.
       </p>
     </div>

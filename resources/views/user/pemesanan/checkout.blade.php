@@ -1,277 +1,213 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="id">
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Konfirmasi Pesanan | Maklon Perfume</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#513678",
-                        "background-light": "#f7f6f7",
-                        "background-dark": "#18151d",
-                    },
-                    fontFamily: {
-                        "display": ["Manrope", "sans-serif"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                },
-            },
-        }
-    </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<title>Konfirmasi Pesanan | PT. Arum Jaya Gemilang</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
 <style>
-        body {
-            font-family: 'Manrope', sans-serif;
-        }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-    </style>
+    body { font-family:'Manrope',sans-serif; background:#f7f6f7; }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+    .primary { color:#513678; }
+    .bg-primary { background-color:#513678; }
+</style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
-<header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center h-14 md:h-16">
-      
-      <!-- Logo dan Nama PT -->
-      <div class="flex items-center gap-3">
-        <!-- Logo perusahaan -->
-        <div class="flex-shrink-0">
-          <img src="{{ asset('Assets/Image/logo.png') }}" 
-               alt="Logo PT. Arum Jaya Gemilang" 
-               class="w-[40px] h-[40px] md:w-[45px] md:h-[45px] object-contain">
-        </div>
-        <!-- Nama PT -->
-        <span class="font-serif text-base md:text-lg lg:text-xl font-bold text-[#523678] tracking-tight whitespace-nowrap">
-          PT. Arum Jaya Gemilang
-        </span>
-      </div>
-      
-      <!-- Profile Icon -->
-      <div class="flex items-center gap-4">
-        <div class="w-8 h-8 rounded-full bg-[#523678]/10 flex items-center justify-center">
-          <span class="material-symbols-outlined text-[#523678] text-sm">person</span>
-        </div>
-      </div>
-      
+<body class="text-slate-900">
+
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <img src="{{ asset('Assets/Image/logo.png') }}" alt="Logo" class="w-9 h-9 object-contain">
+      <span class="font-bold text-[#523678] text-sm md:text-base">PT. Arum Jaya Gemilang</span>
+    </div>
+    <div class="flex items-center gap-3">
+        <a href="{{ route('pemesanan.pilih-aroma') }}" class="text-xs text-[#523678] hover:underline">← Kembali</a>
+        <span class="text-xs text-slate-400 hidden sm:block">{{ auth()->user()->nama_brand ?? auth()->user()->name }}</span>
     </div>
   </div>
 </header>
-<main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-<div class="mb-10">
-<div class="flex items-center justify-between max-w-2xl mx-auto relative">
-<div class="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 dark:bg-slate-800 -translate-y-1/2 -z-10"></div>
-<div class="flex flex-col items-center gap-2 bg-background-light dark:bg-background-dark px-2">
-<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">
-<span class="material-symbols-outlined text-sm">check</span>
-</div>
-<span class="text-xs font-semibold text-slate-500">Formulasi</span>
-</div>
-<div class="flex flex-col items-center gap-2 bg-background-light dark:bg-background-dark px-2">
-<div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">
-<span class="material-symbols-outlined text-sm">check</span>
-</div>
-<span class="text-xs font-semibold text-slate-500">Desain</span>
-</div>
-<div class="flex flex-col items-center gap-2 bg-background-light dark:bg-background-dark px-2">
-<div class="w-10 h-10 rounded-full ring-4 ring-primary/20 bg-primary text-white flex items-center justify-center text-xs font-bold">3</div>
-<span class="text-xs font-bold text-primary">Checkout</span>
-</div>
-<div class="flex flex-col items-center gap-2 bg-background-light dark:bg-background-dark px-2">
-<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-400 flex items-center justify-center text-xs font-bold">4</div>
-<span class="text-xs font-semibold text-slate-400">Produksi</span>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-<div class="lg:col-span-8 space-y-6">
-<section>
-<h1 class="text-3xl font-black tracking-tight mb-2">Finalisasi Pesanan Produksi</h1>
-<p class="text-slate-500 dark:text-slate-400">Silakan tinjau spesifikasi parfum kustom dan lini masa manufaktur Anda.</p>
-</section>
-<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-<div class="p-6">
-<div class="flex items-center gap-4 mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
-<div class="w-24 h-24 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0">
-<img alt="Fragrance bottle silhouette" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKb0wBVv--bmUQmryOyI6nhuZOoAhjUfMnwVqFhwQvqCbM3-yZsNkrczPSywE6mF8TWQHhzex6LhxNmjav8dn6ly899NBv7kkOEZu1Zp6g1vIgBVzaF8RDS38-E4siazmTsQY7C9MKTK1QeQCOX5OfEgsMaHPgtvvtFWDfOYOT88LKM3Z414i1HhCR8AHLOjK3kn-GotTx9UanyGMx1LkbFZnYiTWRIPMaXRQ8RhrT4XcMJyCTuTK_F-7woDw1CO2x-Eun_6lnJGI"/>
-</div>
-<div class="flex-1">
-<div class="flex justify-between items-start">
-<div>
-<h3 class="text-xl font-bold">Velvet Oud &amp; Saffron</h3>
-<p class="text-sm text-slate-500">Ref ID: MK-99283-2024</p>
-</div>
-<span class="px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">Batch Premium</span>
-</div>
-<div class="mt-4 flex flex-wrap gap-2">
-<span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs">
-<span class="material-symbols-outlined text-[14px]">opacity</span> 100ml
-                                </span>
-<span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs"><span class="material-symbols-outlined text-[14px]">package_2</span> Botol Kaca Silinder</span>
-<span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded text-xs"><span class="material-symbols-outlined text-[14px]">inventory_2</span> 500 Unit</span>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<div>
-<h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Komposisi Aroma</h4>
-<ul class="space-y-3">
-<li class="flex items-center justify-between">
-<span class="text-sm">Atas: Saffron, Bergamot</span>
-<span class="text-xs font-semibold text-primary">15%</span>
-</li>
-<li class="flex items-center justify-between">
-<span class="text-sm">Tengah: Bulgarian Rose, Oud</span>
-<span class="text-xs font-semibold text-primary">45%</span>
-</li>
-<li class="flex items-center justify-between">
-<span class="text-sm">Bawah: Sandalwood, Amber</span>
-<span class="text-xs font-semibold text-primary">40%</span>
-</li>
-</ul>
-<button class="mt-4 text-xs font-bold text-primary flex items-center gap-1 hover:underline"><span class="material-symbols-outlined text-sm">visibility</span> LIHAT RESEP LENGKAP</button>
-</div>
-<div>
-<h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Detail Kemasan</h4>
-<div class="space-y-2">
-<div class="flex justify-between text-sm">
-<span class="text-slate-500">Botol:</span>
-<span class="font-medium">Frosted Gold Finish</span>
-</div>
-<div class="flex justify-between text-sm">
-<span class="text-slate-500">Tutup:</span>
-<span class="font-medium">Kayu Magnetik</span>
-</div>
-<div class="flex justify-between text-sm">
-<span class="text-slate-500">Label:</span>
-<span class="font-medium">Cetak Foil Emas</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="bg-primary/5 rounded-xl p-6 border border-primary/10">
-<div class="flex items-start gap-4">
-<div class="p-3 bg-white dark:bg-slate-900 rounded-lg text-primary shadow-sm">
-<span class="material-symbols-outlined">event_upcoming</span>
-</div>
-<div class="flex-1">
-<h3 class="text-lg font-bold">Lini Masa Produksi</h3>
-<p class="text-sm text-slate-600 dark:text-slate-400 mb-4">Estimasi penyelesaian dan jadwal pengiriman.</p>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-<div class="bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-100 dark:border-slate-800">
-<span class="text-[10px] font-black uppercase text-slate-400">Bahan Baku</span>
-<p class="text-sm font-bold">12 Okt - 15 Okt</p>
-</div>
-<div class="bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-100 dark:border-slate-800">
-<span class="text-[10px] font-black uppercase text-slate-400">Pencampuran &amp; Pengemasan</span>
-<p class="text-sm font-bold">16 Okt - 05 Nov</p>
-</div>
-<div class="bg-primary p-4 rounded-lg shadow-sm border border-primary text-white">
-<span class="text-[10px] font-black uppercase text-white/70">Tanggal Pengiriman</span>
-<p class="text-sm font-bold">12 Nov 2024</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="space-y-4">
-<h3 class="text-lg font-bold">Metode Pembayaran</h3>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-<label class="relative flex flex-col p-4 bg-white dark:bg-slate-900 border-2 border-primary rounded-xl cursor-pointer shadow-sm">
-<input checked="" class="absolute top-4 right-4 text-primary focus:ring-primary h-4 w-4" name="payment" type="radio"/>
-<span class="material-symbols-outlined text-primary mb-2">account_balance</span>
-<span class="text-sm font-bold">Transfer Bank</span>
-<span class="text-[10px] text-slate-400">Verifikasi manual</span>
-</label>
-<label class="relative flex flex-col p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:border-primary/50 transition-colors">
-<input class="absolute top-4 right-4 text-primary focus:ring-primary h-4 w-4" name="payment" type="radio"/>
-<span class="material-symbols-outlined text-slate-600 dark:text-slate-400 mb-2">credit_card</span>
-<span class="text-sm font-bold">Kartu Kredit</span>
-<span class="text-[10px] text-slate-400">Verifikasi otomatis</span>
-</label>
-<label class="relative flex flex-col p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl cursor-pointer hover:border-primary/50 transition-colors">
-<input class="absolute top-4 right-4 text-primary focus:ring-primary h-4 w-4" name="payment" type="radio"/>
-<span class="material-symbols-outlined text-slate-600 dark:text-slate-400 mb-2">account_balance_wallet</span>
-<span class="text-sm font-bold">Deposit 50%</span>
-<span class="text-[10px] text-slate-400">Bayar sisa saat pengiriman</span>
-</label>
-</div>
-</div>
-</div>
-<div class="lg:col-span-4 lg:sticky lg:top-24">
-<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
-<div class="p-6">
-<h3 class="text-lg font-bold mb-6">Ringkasan Biaya Pesanan</h3>
-<div class="space-y-4 mb-6">
-<div class="flex justify-between text-sm">
-<span class="text-slate-500">Esensi Parfum (5L)</span>
-<span class="font-medium font-display">Rp 65.500.000</span>
-</div>
-<div class="flex justify-between text-sm">
-<span class="text-slate-500">Kemasan (500 set)</span>
-<span class="font-medium font-display">Rp 18.250.000</span>
-</div>
-<div class="flex justify-between text-sm">
-<span class="text-slate-500">Tenaga Kerja &amp; Pengisian</span>
-<span class="font-medium font-display">Rp 14.000.000</span>
-</div>
-<div class="flex justify-between text-sm">
-<span class="text-slate-500">Biaya Lab Kontrol Kualitas</span>
-<span class="font-medium font-display">Rp 4.700.000</span>
-</div>
-<div class="flex justify-between text-sm">
-<span class="text-slate-500">Pengiriman (Kargo)</span>
-<span class="font-medium font-display text-green-600 font-bold uppercase text-[10px] self-center">Gratis</span>
-</div>
-<div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-end">
-<div>
-<span class="text-xs text-slate-400 font-bold uppercase">Total Harga</span>
-<p class="text-3xl font-black text-primary">Rp 102.450.000</p>
-</div>
-<span class="text-[10px] text-slate-400">Termasuk PPN 10%</span>
-</div>
-</div>
-<div class="space-y-4">
-<div class="flex items-start gap-3">
-<input class="mt-1 rounded text-primary focus:ring-primary border-slate-300" id="terms" type="checkbox"/>
-<label class="text-xs text-slate-500 leading-relaxed" for="terms">Saya setuju dengan <a class="text-primary underline" href="#">Syarat &amp; Ketentuan Manufaktur</a> dan memahami bahwa produksi parfum kustom tidak dapat dibatalkan setelah proses batch dimulai.</label>
-</div>
-<button class="w-full bg-primary hover:bg-[#422c63] text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2 group">KONFIRMASI PESANAN PRODUKSI <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span></button>
-<div class="flex items-center justify-center gap-6 pt-4">
-<div class="flex items-center gap-1 text-[10px] font-bold text-slate-400">
-<span class="material-symbols-outlined text-sm">verified_user</span>
-                                PEMBAYARAN TERJAMIN
-                            </div>
-<div class="flex items-center gap-1 text-[10px] font-bold text-slate-400">
-<span class="material-symbols-outlined text-sm">workspace_premium</span>
-                                BERSERTIFIKAT GMP
-                            </div>
-</div>
-</div>
-</div>
-<div class="bg-slate-50 dark:bg-slate-800/50 p-4 border-t border-slate-100 dark:border-slate-800">
-<p class="text-[10px] text-slate-400 text-center leading-tight">Butuh bantuan? Hubungi spesialis lab Anda di <br/><a class="text-primary font-bold" href="mailto:arumjayagemilang1@gmail.com">arumjayagemilang@gmail.com</a></p>
-</div>
-</div>
-</div>
-</div>
-</main>
-<footer class="mt-20 border-t border-slate-200 dark:border-slate-800 py-10 bg-white dark:bg-background-dark">
-<div class="max-w-7xl mx-auto px-4 text-center">
-<p class="text-xs text-slate-400">© 2026 PT. Arum Jaya Gemilang. Hak Cipta Dilindungi.</p>
-</div>
-</footer>
 
-</body></html>
+<main class="max-w-6xl mx-auto px-4 py-8 sm:px-6">
+
+    {{-- Step Indicator --}}
+    <div class="flex items-center justify-center gap-2 mb-8 text-xs font-semibold flex-wrap">
+        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">✓ Pengajuan</span>
+        <span class="text-gray-300">──</span>
+        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">✓ Pilih Aroma</span>
+        <span class="text-gray-300">──</span>
+        <span class="bg-[#513678] text-white px-3 py-1 rounded-full">③ Checkout</span>
+    </div>
+
+    @if($errors->any())
+    <div class="mb-5 bg-red-50 border border-red-200 rounded-xl p-4 text-sm">
+        @foreach($errors->all() as $e)<p class="text-red-700">• {{ $e }}</p>@endforeach
+    </div>
+    @endif
+
+    <form action="{{ route('pemesanan.checkout.process') }}" method="POST">
+    @csrf
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        {{-- KIRI: Detail Pesanan --}}
+        <div class="lg:col-span-8 space-y-5">
+            <div>
+                <h1 class="text-2xl font-black tracking-tight mb-1">Finalisasi Pesanan Produksi</h1>
+                <p class="text-slate-500 text-sm">Tinjau spesifikasi pesanan Anda sebelum dikonfirmasi.</p>
+            </div>
+
+            {{-- Ringkasan produk --}}
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm">
+                <div class="p-6">
+                    <div class="flex items-start gap-4 pb-5 mb-5 border-b border-slate-100">
+                        <div class="w-14 h-14 rounded-xl bg-purple-50 flex items-center justify-center text-3xl flex-shrink-0">🧴</div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start flex-wrap gap-2">
+                                <div>
+                                    <h3 class="text-lg font-bold">{{ auth()->user()->nama_brand ?? auth()->user()->name }}</h3>
+                                    <p class="text-xs text-slate-400">ID akan diberikan setelah konfirmasi</p>
+                                </div>
+                                <span class="px-3 py-1 bg-purple-100 text-[#513678] text-xs font-bold rounded-full">
+                                    {{ $hargaParfum->jenis_parfum }}
+                                </span>
+                            </div>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 rounded text-xs">
+                                    🌺 {{ $aroma->nama_kategori }}
+                                </span>
+                                <span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 rounded text-xs">
+                                    📦 {{ $kemasan->jenis_botol }} {{ $kemasan->ukuran }}
+                                </span>
+                                <span class="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 rounded text-xs">
+                                    🏭 {{ number_format($jumlah) }} Unit
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Detail Produk</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between"><span class="text-slate-500">Jenis Parfum</span><span class="font-semibold">{{ $hargaParfum->jenis_parfum }}</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Harga/ml</span><span class="font-semibold">Rp {{ number_format($hargaParfum->harga_per_ml, 0, ',', '.') }}</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Target Market</span><span class="font-semibold">{{ $data['target_market'] }}</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Jumlah</span><span class="font-semibold">{{ number_format($jumlah) }} unit</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Detail Kemasan</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between"><span class="text-slate-500">Botol</span><span class="font-semibold">{{ $kemasan->jenis_botol }}</span></div>
+                                <div class="flex justify-between"><span class="text-slate-500">Ukuran</span><span class="font-semibold">{{ $kemasan->ukuran }}</span></div>
+                                @if($kemasan->jenis_box)
+                                <div class="flex justify-between"><span class="text-slate-500">Box</span><span class="font-semibold">{{ $kemasan->jenis_box }}</span></div>
+                                @endif
+                                <div class="flex justify-between"><span class="text-slate-500">Aroma</span><span class="font-semibold">{{ $aroma->nama_kategori }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if(!empty($data['catatan']))
+                    <div class="mt-4 p-3 bg-slate-50 rounded-lg text-sm text-slate-600 italic border border-slate-100">
+                        <strong class="not-italic text-slate-700">Catatan:</strong> {{ $data['catatan'] }}
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Metode Pembayaran --}}
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                <h3 class="text-base font-bold mb-4">Metode Pembayaran <span class="text-red-500">*</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    @foreach(['Transfer BCA' => 'account_balance', 'Transfer Mandiri' => 'account_balance', 'QRIS' => 'qr_code_2'] as $m => $icon)
+                    <label class="relative flex flex-col p-4 bg-white border-2 rounded-xl cursor-pointer transition-colors
+                        {{ old('metode_pembayaran', 'Transfer BCA') === $m ? 'border-[#513678]' : 'border-slate-200 hover:border-purple-300' }}">
+                        <input type="radio" name="metode_pembayaran" value="{{ $m }}"
+                               class="absolute top-3 right-3 text-[#513678] h-4 w-4"
+                               {{ old('metode_pembayaran', 'Transfer BCA') === $m ? 'checked' : '' }}>
+                        <span class="material-symbols-outlined text-[#513678] mb-2">{{ $icon }}</span>
+                        <span class="text-sm font-bold">{{ $m }}</span>
+                        <span class="text-[10px] text-slate-400">Verifikasi manual</span>
+                    </label>
+                    @endforeach
+                </div>
+                @error('metode_pembayaran')<p class="text-red-500 text-xs mt-2">{{ $message }}</p>@enderror
+            </div>
+        </div>
+
+        {{-- KANAN: Ringkasan Biaya --}}
+        <div class="lg:col-span-4 lg:sticky lg:top-20">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-xl overflow-hidden">
+                <div class="p-6">
+                    <h3 class="text-base font-bold mb-5">Ringkasan Biaya</h3>
+                    <div class="space-y-3 mb-5 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Biaya Parfum ({{ $jumlah }} × Rp {{ number_format($hargaParfum->harga_per_ml,0,',','.') }})</span>
+                            <span class="font-medium">Rp {{ number_format($biayaParfum,0,',','.') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Biaya Aroma ({{ $aroma->nama_kategori }})</span>
+                            <span class="font-medium">Rp {{ number_format($biayaAroma,0,',','.') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Biaya Kemasan ({{ $kemasan->jenis_botol }})</span>
+                            <span class="font-medium">Rp {{ number_format($biayaKemasan,0,',','.') }}</span>
+                        </div>
+                        <div class="pt-4 border-t border-slate-100 flex justify-between items-end">
+                            <div>
+                                <span class="text-xs text-slate-400 font-bold uppercase">Total Estimasi</span>
+                                <p class="text-3xl font-black text-[#513678]">Rp {{ number_format($totalHarga,0,',','.') }}</p>
+                            </div>
+                            <span class="text-[10px] text-slate-400">Belum termasuk pajak</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3">
+                            <input id="setuju" name="setuju" type="checkbox" value="1"
+                                   class="mt-1 rounded text-[#513678] focus:ring-[#513678] border-slate-300">
+                            <label for="setuju" class="text-xs text-slate-500 leading-relaxed cursor-pointer">
+                                Saya setuju dengan <a href="#" class="text-[#513678] underline">Syarat & Ketentuan</a> dan memahami bahwa pengajuan bersifat final setelah dikonfirmasi.
+                            </label>
+                        </div>
+                        @error('setuju')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
+
+                        <button type="submit"
+                                class="w-full bg-[#513678] hover:bg-[#422c63] active:scale-[.98] text-white py-3.5 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 group">
+                            KONFIRMASI PESANAN
+                            <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </button>
+
+                        <div class="flex justify-center gap-5 pt-2">
+                            <div class="flex items-center gap-1 text-[10px] font-bold text-slate-400">
+                                <span class="material-symbols-outlined text-sm">verified_user</span> PEMBAYARAN TERJAMIN
+                            </div>
+                            <div class="flex items-center gap-1 text-[10px] font-bold text-slate-400">
+                                <span class="material-symbols-outlined text-sm">workspace_premium</span> BERSERTIFIKAT GMP
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 p-4 border-t border-slate-100">
+                    <p class="text-[10px] text-slate-400 text-center">
+                        Bantuan: <a href="mailto:arumjayagemilang1@gmail.com" class="text-[#513678] font-bold">arumjayagemilang@gmail.com</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </form>
+</main>
+
+<footer class="mt-14 border-t border-slate-200 py-8 bg-white">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+        <p class="text-xs text-slate-400">© {{ date('Y') }} PT. Arum Jaya Gemilang. Hak Cipta Dilindungi.</p>
+    </div>
+</footer>
+</body>
+</html>
